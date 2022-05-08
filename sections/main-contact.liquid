@@ -1,0 +1,60 @@
+{% render 'content-open', class: 'column-max', sidebar: false %}
+
+  {% render 'page-header', title: page.title %}
+
+  {% render 'separator' %}
+
+  <div class="row">
+
+    <div class="columns large-6">
+      {{ page.content }}
+    </div>
+
+    {% render 'separator', class: 'margin-top margin-bottom hide-for-large' %}
+
+    <div class="columns large-5 large-push-1">
+      <div id="contact-form">
+        {%- assign formId = 'ContactForm' -%}
+        {% form 'contact', id: formId %}
+
+          {% if form.posted_successfully? %}
+            <div class="form-success panel green text-center font-size-15" data-form-status role="alert">
+              {{ 'contact.form.posted_successfully' | t }}
+            </div>
+          {% endif %}
+
+          {% render 'form-errors', form: form %}
+
+          <div class="row">
+            <input type="text" id="name" name="contact[name]" value="{{ form.name }}" placeholder="{{ 'contact.form.name_field_placeholder' | t }}" aria-label="{{ 'contact.form.name_field_placeholder' | t }}" {% unless form.errors or form.posted_successfully?  %} data-auto-focus {% endunless %}>
+            {% render 'field-error-message', form: form, field: 'name' %}
+          </div>
+
+          <div class="row">
+            <input type="email" id="email" name="contact[email]" value="{{ form.email }}" placeholder="{{ 'contact.form.email_field_placeholder' | t }}"
+            aria-label="{{ 'contact.form.email_field_placeholder' | t }}"
+            class="{% if form.errors %} error {% endif %}"
+            {% if form.errors %}
+                  aria-invalid="true"
+                  aria-describedby="{{ formId }}-email-error"
+                  data-form-status
+              {% endif %}>
+            {% render 'field-error-message', form: form, field: 'email' %}
+          </div>
+
+          <div class="row">
+            <textarea id="message" name="contact[body]" placeholder="{{ 'contact.form.message_field_placeholder' | t }}" aria-label="{{ 'contact.form.message_field_placeholder' | t }}" rows="6">{% if form.body %}{{ form.body }}{% endif %}</textarea>
+            {% render 'field-error-message', form: form, field: 'body' %}
+          </div>
+
+          <div class="form-actions margin-top-50 text-right">
+            <button type="submit" class="button">{{ 'contact.form.submit' | t }}</button>
+          </div>
+
+        {% endform %}
+      </div>
+    </div>
+
+  </div>
+
+{% render 'content-close', sidebar: false %}

@@ -1,0 +1,77 @@
+{% if image_placeholder != true %}
+
+  {% assign image_url = image | img_url: '1x1' | replace: '_1x1.', '_{width}x.' %}
+  {% assign master_image_url = image | img_url: 'master' %}
+  {% assign image_attributes = image_attributes | append: ' data-src-master="' | append: master_image_url | append: '"' %}
+  {% if image_class %}
+    {% assign image_container_class = image_container_class | append: image_class | append: '-container' %}
+  {% endif %}
+  {% if focusable %}
+    {% assign image_container_class = image_container_class | append: ' focusable' %}
+  {% endif %}
+  {% if image_widths %}
+    {% assign image_attributes = image_attributes | append: ' data-widths="[' | append: image_widths | append: ']"' %}
+  {% endif %}
+  {% if image.aspect_ratio %}
+    {% if image.preview_image and image.preview_image.aspect_ratio %}
+      {% assign image_container_padding_top = 1 | divided_by: image.preview_image.aspect_ratio | times: 100 | append: '%' %}
+    {% else %}
+      {% assign image_container_padding_top = 1 | divided_by: image.aspect_ratio | times: 100 | append: '%' %}
+    {% endif %}
+  {% else %}
+    {% assign image_container_padding_top = '100%' %}
+  {% endif %}
+  {% unless image_alt %}
+    {% assign image_alt = image.alt %}
+  {% endunless %}
+  {% unless fallback_image_size %}
+    {% assign fallback_image_size = '800x' %}
+  {% endunless %}
+
+  <div class="image-container {{ image_container_class }}" style="max-width: {{ image.width }}px;" data-media-id="{{ image.id }}" {{ image_container_attributes }}>
+    {% if image %}
+      {% if image_link_url != blank %}
+        <a href="{{ image_link_url }}" title="{{ image_alt }}">
+      {% endif %}
+      <div class="image-container-position aspect__{{ image_ratio }}" {% if image_ratio == 'adapt' or image_ratio == blank %} style="padding-bottom: {{ image_container_padding_top }};"{% endif %}>
+        <img
+        {% if image_id %} id="{{ image_id }}"{% endif %}
+        class="lazyload {{ image_class }}"
+        src="{{ image | img_url: 'medium' }}"
+        data-media-id="{{ image.id }}"
+        data-src="{{ image_url }}"
+        data-aspectratio="{{ image.aspect_ratio }}"
+        data-sizes="auto"
+        data-widths="[180, 360, 540, 720, 900, 1080, 1296, 1512, 1728, 2048]"
+        alt="{{ image_alt }}" {{ image_attributes }}/>
+      </div>
+      {% if image_link_url != blank %}
+        </a>
+      {% endif %}
+    {% endif %}
+  </div>
+
+  <noscript>
+    <div class="text-center">
+      {{ image | img_url: fallback_image_size | img_tag: image_alt }}
+    </div>
+  </noscript>
+
+  {% assign image_class = nil %}
+  {% assign image_container_class = nil %}
+  {% assign image_attributes = nil %}
+
+{% else %}
+
+  {% capture current %}{% cycle 1, 2, 3, 4, 5, 6 %}{% endcapture %}
+
+  <div class="image-container">
+    {% if image_type %}
+      {% assign placeholder = image_type | append: '-' | append: current %}
+    {% else %}
+      {% assign placeholder = 'image' %}
+    {% endif %}
+    {{ placeholder | placeholder_svg_tag: 'placeholder-svg' }}
+  </div>
+
+{% endif %}

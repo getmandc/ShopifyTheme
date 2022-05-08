@@ -1,0 +1,13 @@
+<div class="sort-collection inline-block">
+  <select class="sort-collection-by" data-sort-by="{{ collection.sort_by | default | escape }}">
+    <option value="">{{ 'collections.sort.sort' | t }}</option>
+    <option value="manual">{{ 'collections.sort.featured' | t }}</option>
+    <option value="price-ascending">{{ 'collections.sort.price_ascending' | t }}</option>
+    <option value="price-descending">{{ 'collections.sort.price_descending' | t }}</option>
+    <option value="title-ascending">{{ 'collections.sort.title_ascending' | t }}</option>
+    <option value="title-descending">{{ 'collections.sort.title_descending' | t }}</option>
+    <option value="created-ascending">{{ 'collections.sort.created_ascending' | t }}</option>
+    <option value="created-descending">{{ 'collections.sort.created_descending' | t }}</option>
+    <option value="best-selling">{{ 'collections.sort.best_selling' | t }}</option>
+  </select>
+</div>

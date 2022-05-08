@@ -1,0 +1,33 @@
+{% comment %}
+  Base
+{% endcomment %}
+{%- assign html_class = 'no-js' -%}
+
+{% comment %}
+  Template
+{% endcomment %}
+{%- assign html_class = html_class | append: ' ' | append: template -%}
+
+{% comment %}
+  Template type
+{% endcomment %}
+{% if template contains '.' %}
+  {%- assign template_classes = template | split: '.' -%}
+  {%- assign template_classes_handled = template | replace: '.', '-' -%}
+  {%- assign html_class = template_classes[0] | append: ' ' | append: template_classes_handled -%}
+{% endif %}
+
+{% comment %}
+  Template extension
+{% endcomment %}
+{% if template contains '/' %}
+  {%- assign template_classes = template | split: '/' -%}
+  {%- assign template_classes_handled = template | replace: '/', '-' -%}
+  {%- assign html_class = template_classes[0] | append: ' ' | append: template_classes_handled -%}
+{% endif %}
+
+{% comment %}
+  Page title
+{% endcomment %}
+{%- assign page_title_handle = page_title | handle -%}
+{%- assign html_class = html_class| append: ' ' | append: page_title_handle -%}

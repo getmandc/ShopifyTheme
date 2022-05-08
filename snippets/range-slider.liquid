@@ -1,0 +1,38 @@
+{%- liquid
+  unless filter.min_value.value
+    assign input_left = 0
+  else
+    if uses_comma_decimals
+      assign input_left = filter.min_value.value | money_without_currency | replace: '.', '' | replace: ',', '.'
+    else 
+      assign input_left = filter.min_value.value | money_without_currency | replace: ',', ''
+    endif
+  endunless
+
+  unless filter.max_value.value
+    if uses_comma_decimals
+      assign input_right = filter.range_max | money_without_currency | replace: '.', '' | replace: ',', '.'
+    else
+      assign input_right = filter.range_max | money_without_currency | replace: ',', ''
+    endif
+  else
+    if uses_comma_decimals
+      assign input_right = filter.max_value.value | money_without_currency | replace: '.', '' | replace: ',', '.'
+    else
+      assign input_right = filter.max_value.value | money_without_currency | replace: ',', ''
+    endif
+  endunless
+-%}
+
+
+<div id="slider-distance" range-slider>
+  <div class="visual-elements">
+    <div inverse-left style="width:70%;"></div>
+    <div inverse-right style="width:70%;"></div>
+    <div range style="left:30%;right:40%;"></div>
+    <span thumb thumb-left style="left:30%;"></span>
+    <span thumb thumb-right style="left:60%;"></span>
+  </div>
+  <input type="range" tabindex="0" value="{{ input_left | floor }}" max="{% if uses_comma_decimals %}{{ filter.range_max | money_without_currency | replace: '.', '' | replace: ',', '.' | ceil }}{% else %}{{ filter.range_max | money_without_currency | replace: ',', '' | ceil }}{% endif %}" min="0" step="1" class="handle" data-handle="left"/>
+  <input type="range" tabindex="0" value="{{ input_right | ceil }}" max="{% if uses_comma_decimals %}{{ filter.range_max | money_without_currency | replace: '.', '' | replace: ',', '.' | ceil }}{% else %}{{ filter.range_max | money_without_currency | replace: ',', '' | ceil }}{% endif %}" min="0" step="1" class="handle" data-handle="right"/>
+</div>

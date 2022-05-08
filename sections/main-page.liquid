@@ -1,0 +1,66 @@
+{% render 'content-open', class: 'column-max' %}
+
+  {%- for block in section.blocks -%}
+    {%- case block.type -%}
+      {%- when '@app' -%}
+        <div class="app-block">
+          {% render block %}
+        </div>
+
+      {%- when 'separator' -%}
+        {% render 'separator' %}
+
+      {%- when 'title' -%}
+        {% render 'page-header', title: page.title %}
+
+       {%- when 'custom-liquid' -%}
+          {{ block.settings.custom_liquid }}
+
+      {%- when 'content' -%}
+        {{ page.content }}
+
+    {%- endcase -%}
+  {%- endfor -%}
+
+{% render 'content-close' %}
+
+
+{% schema %}
+{
+  "name": "t:sections.main-page.name",
+  "tag": "section",
+  "class": "spaced-section",
+  "blocks": [
+    {
+      "type": "@app"
+    },
+    {
+      "type": "title",
+      "name": "t:sections.main-page.blocks.title.name",
+      "limit": 1
+    },
+    {
+      "type": "separator",
+      "name": "t:sections.main-page.blocks.separator.name",
+      "limit": 4
+    },
+    {
+      "type": "custom-liquid",
+      "name": "t:sections.main-page.blocks.custom_liquid.name",
+      "settings": [
+        {
+          "type": "liquid",
+          "id": "custom_liquid",
+          "label": "t:sections.main-page.blocks.custom_liquid.settings.custom_liquid.label",
+          "info": "t:sections.main-page.blocks.custom_liquid.settings.custom_liquid.info"
+        }
+      ]
+    },
+    {
+      "type": "content",
+      "name": "t:sections.main-page.blocks.content.name",
+      "limit": 1
+    }
+  ]
+}
+{% endschema %}

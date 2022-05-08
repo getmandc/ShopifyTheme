@@ -1,0 +1,19 @@
+<section class="secondary-block secondary-block-customer-address">
+  <header>
+    <h1>{{ 'customer.order.billing_address' | t }}</h1>
+  </header>
+  <div class="font-size-15">
+    {{ order.billing_address | format_address }}
+  </div>
+</section>
+
+{% render 'separator', class: 'lined margin-top margin-bottom' %}
+
+<section class="secondary-block secondary-block-customer-address">
+  <header>
+    <h1>{{ 'customer.order.shipping_address' | t }}</h1>
+  </header>
+  <div class="font-size-15">
+    {{ order.shipping_address | format_address }}
+  </div>
+</section>

@@ -1,0 +1,115 @@
+{% assign guest_login_title = 'customer.login.guest_title' | t %}
+{% assign login_title = 'customer.login.title' | t %}
+{% assign recover_password_title = 'customer.recover_password.title' | t %}
+
+{% render 'content-open', class: 'column-max padding-top-200 padding-bottom-200' %}
+
+  <div class="column-extra-narrow">
+
+    <div id="customer-login">
+
+      {% render 'page-header', class: 'text-center', title: login_title %}
+
+      <p class="message text-center text-light margin-top">{{ 'customer.login.message_html' | t }}</p>
+
+      <div id="recover-password-success" class="panel green text-center hidden" role="alert" data-form-status>
+        {{ 'customer.recover_password.success' | t }}
+      </div>
+
+      {% form 'customer_login' %}
+
+        {% render 'form-errors', form: form, focus_on_error: true %}
+
+        <div class="row">
+          <input type="email" id="email" name="customer[email]" value="{{ form.email }}" {% if form.errors %} class="error" aria-invalid="true" {% endif %} placeholder="{{ 'customer.login.email_field_placeholder' | t }}" aria-label="{{ 'customer.login.email_field_placeholder' | t }}" autocomplete="email" autocorrect="off" autocapitalize="off"{% unless form.errors or form.posted_successfully? %} data-auto-focus {% endunless %}>
+          {% render 'field-error-message', form: form, field: 'email' %}
+        </div>
+
+        <div class="row">
+          <input type="password" id="customer_password" name="customer[password]" value="{{ form.password }}" {% if form.errors %} class="error" aria-invalid="true" {% endif %} placeholder="{{ 'customer.login.password_field_placeholder' | t }}" aria-label="{{ 'customer.login.password_field_placeholder' | t }}">
+          {% render 'field-error-message', form: form, field: 'password' %}
+        </div>
+
+        <div class="form-actions text-center width-100">
+          <p class="no-margin-bottom">
+            <input class="button" type="submit" value="{{ 'customer.login.submit' | t }}">
+          </p>
+
+          {% render 'separator', class: 'lined margin-top-150 margin-bottom' %}
+
+          <p class="font-size-15 margin-bottom-50">
+            {{ 'customer.login.create_account' | t | customer_register_link }}
+          </p>
+
+          <p class="font-size-15 no-margin-bottom">
+            <a href="#" class="toggle-password-recovery" data-show-module-id="customer-recover-password">{{ 'customer.login.recover_password' | t }}</a>
+          </p>
+        </div>
+
+      {% endform %}
+
+    </div>
+
+    <div id="customer-recover-password" style="display:none">
+
+      {% render 'page-header', class: 'text-center', title: recover_password_title %}
+
+      <p class="message text-center text-light margin-top">{{ 'customer.recover_password.message_html' | t }}</p>
+
+      {% form 'recover_customer_password' %}
+
+        {% render 'form-errors', form: form %}
+
+        {% if form.posted_successfully? %}
+          <span class="hidden" data-recover-password-success></span>
+        {% endif %}
+
+        <div class="row">
+          <input type="email" id="email" name="email" value="{{ form.email }}" placeholder="{{ 'customer.recover_password.email_field_placeholder' | t }}"
+          aria-label="{{ 'customer.recover_password.email_field_placeholder' | t }}"
+          class="{% if form.errors %}error{% endif %}"
+          autocorrect="off"
+          autocapitalize="off"
+          {% if form.errors %}
+            aria-invalid="true"
+            aria-describedby="RecoverEmail-email-error"
+            data-form-status
+          {%- endif -%}>
+          {% render 'field-error-message', form: form, field: 'email' %}
+        </div>
+
+        <div class="form-actions text-center width-100">
+
+          <p class="no-margin-bottom">
+            <input class="button" type="submit" value="{{ 'customer.recover_password.submit' | t }}">
+          </p>
+
+          {% render 'separator', class: 'lined margin-top-150 margin-bottom' %}
+
+          <p class="font-size-15 no-margin-bottom">
+            <a href="#" class="toggle-password-recovery" data-show-module-id="customer-login">{{ 'customer.recover_password.cancel' | t }}</a>
+          </p>
+
+        </div>
+
+      {% endform %}
+
+    </div>
+
+    {% if shop.checkout.guest_login %}
+      <div class="text-center">
+
+        {% render 'page-header', class: 'text-center', title: guest_login_title %}
+
+        {% render 'separator' %}
+
+        {% form 'guest_login' %}
+          <input type="submit" class="button" value="{{ 'customer.login.guest_submit' | t }}">
+        {% endform %}
+
+      </div>
+    {% endif %}
+
+  </div>
+
+{% render 'content-close' %}

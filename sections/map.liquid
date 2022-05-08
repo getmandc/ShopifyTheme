@@ -1,0 +1,242 @@
+{% render 'section-open', section: section, type: 'map', title: false %}
+
+  {% assign show_map = false %}
+
+  {% if section.settings.map_api_key != blank and section.settings.map_address %}
+    {% assign show_map = true %}
+  {% endif %}
+
+  <style>
+    #shopify-section-{{ section.id }} .map-section-inner {
+      background-color: {{ section.settings.bg_color }};
+      color: {{ section.settings.color_text }};
+    }
+    #shopify-section-{{ section.id }} .map-section-inner .cell {
+      width: 50%;
+    }
+    #shopify-section-{{ section.id }} .map-section-inner-content {
+      padding: 3rem;
+      text-align: center;
+    }
+    #shopify-section-{{ section.id }} .map-section-inner-content i {
+      font-size: 1.125em;
+      margin-right: 0.25em;
+    }
+    #shopify-section-{{ section.id }} .map-section-inner-content-heading {
+      color: {{ section.settings.color_text }};
+      {% if section.settings.heading != blank and section.settings.address == blank %}
+        margin: 0;
+      {% else %}
+        margin-top: 0;
+      {% endif %}
+    }
+    #shopify-section-{{ section.id }} .map-section-inner-content-address > *:last-child {
+      margin-bottom: 0;
+    }
+    #shopify-section-{{ section.id }} .map-section-inner-content {
+      padding: 3rem;
+      text-align: center;
+    }
+    #shopify-section-{{ section.id }} .map-section-inner-map {
+      {% if section.settings.image %}
+        background-repeat: no-repeat;
+        background-position: {{ section.settings.image_position }};
+        background-size: cover;
+      {% endif %}
+    }
+    #shopify-section-{{ section.id }} .map-section-inner-map .placeholder-svg {
+      background-color: transparent;
+    }
+    @media screen and (max-width: 640px) {
+      #shopify-section-{{ section.id }} .map-section-inner {
+        display: block;
+      }
+      #shopify-section-{{ section.id }} .map-section-inner .cell {
+        display: block;
+        width: auto;
+      }
+      #shopify-section-{{ section.id }} .map-section-inner-map {
+        height: 55vh;
+      }
+    }
+    .no-js #shopify-section-{{ section.id }} .map-section-inner-map {
+      {% if section.settings.image %}
+        background-image: url("{{ section.settings.image | img_url: '800x' }}");
+      {% endif %}
+    }
+  </style>
+
+  <div class="map-section-inner table">
+
+    <div class="map-section-inner-content cell">
+
+      {% if section.settings.heading != blank %}
+        <h2 class="map-section-inner-content-heading lhxt">{{ section.settings.heading }}</h2>
+      {% endif %}
+
+      {% if section.settings.address != blank %}
+        <div class="map-section-inner-content-address font-size-15">{{ section.settings.address }}</div>
+      {% endif %}
+
+      {% if section.settings.directions_button_label != blank and section.settings.map_address != blank %}
+        {% render 'separator', class: 'margin-top-50 margin-bottom-50' %}
+        <a href="https://maps.google.com?daddr={{ section.settings.map_address | escape }}" target="_blank" class="button">{% if section.settings.show_pin %}{% render 'icon-map-maker' %}{% endif %}{{ section.settings.directions_button_label }}</a>
+      {% endif %}
+
+    </div>
+
+    <div class="map-section-inner-map cell lazyload" data-bgset="{% if section.settings.image != blank %}{% render 'image-bgset', image: section.settings.image %}{% endif %}" data-sizes="auto" data-parent-fit="cover">
+      {% if show_map %}
+        <div class="google-map" id="map-{{ section.id }}" data-api-key="{{ section.settings.map_api_key }}" data-address="{{ section.settings.map_address | escape }}">
+        </div>
+      {% else %}
+        {% if section.settings.image == blank %}
+          <div class="map-section-inner-map-placeholder">
+            {{ 'lifestyle-2' | placeholder_svg_tag: 'placeholder-svg' }}
+          </div>
+        {% endif %}
+      {% endif %}
+    </div>
+
+  </div>
+
+{% render 'section-close' %}
+
+
+{% schema %}
+{
+  "name": "t:sections.map.name",
+  "class": "index-section section-map",
+  "settings": [
+    {
+      "id": "width",
+      "type": "select",
+      "label": "t:sections.map.settings.width.label",
+      "options": [
+        {
+          "value": "column-max",
+          "label": "t:sections.map.settings.width.option__1.label"
+        },
+        {
+          "value": "width-100",
+          "label": "t:sections.map.settings.width.option__2.label"
+        }
+      ],
+      "default": "column-max"
+    },
+    {
+      "type": "text",
+      "id": "heading",
+      "label": "t:sections.map.settings.heading.label",
+      "default": "Our store"
+    },
+    {
+      "type": "richtext",
+      "id": "address",
+      "label": "t:sections.map.settings.address.label",
+      "default": "<p>123 Fake St.<br>Toronto, Canada</p><p>Mon - Fri, 10am - 9pm<br>Saturday, 11am - 9pm<br>Sunday, 11am - 5pm</p>"
+    },
+    {
+      "id": "map_address",
+      "type": "text",
+      "label": "t:sections.map.settings.map_address.label",
+      "info": "t:sections.map.settings.map_address.info",
+      "default": "80 Spadina Ave, Toronto"
+    },
+    {
+      "type": "text",
+      "id": "directions_button_label",
+      "label": "t:sections.map.settings.directions_button_label.label",
+      "default": "Directions"
+    },
+    {
+      "id": "show_pin",
+      "type": "checkbox",
+      "label": "t:sections.map.settings.show_pin.label",
+      "default": true
+    },
+    {
+      "id": "map_api_key",
+      "type": "text",
+      "label": "t:sections.map.settings.map_api_key.label",
+      "info": "t:sections.map.settings.map_api_key.info"
+    },
+    {
+      "type": "header",
+      "content": "t:sections.map.settings.header__1.content"
+    },
+    {
+      "type": "color",
+      "id": "color_text",
+      "label": "t:sections.map.settings.color_text.label",
+      "default": "#2a2b2b"
+    },
+    {
+      "type": "color",
+      "id": "bg_color",
+      "label": "t:sections.map.settings.bg_color.label",
+      "default": "#f0f1f2"
+    },
+    {
+      "type": "header",
+      "content": "t:sections.map.settings.header__2.content"
+    },
+    {
+      "type": "image_picker",
+      "id": "image",
+      "label": "t:sections.map.settings.image.label",
+      "info": "t:sections.map.settings.image.info"
+    },
+    {
+      "type": "select",
+      "id": "image_position",
+      "label": "t:sections.map.settings.image_position.label",
+      "default": "center center",
+      "options": [
+        {
+          "label": "t:sections.map.settings.image_position.option__1.label",
+          "value": "top left"
+        },
+        {
+          "label": "t:sections.map.settings.image_position.option__2.label",
+          "value": "top center"
+        },
+        {
+          "label": "t:sections.map.settings.image_position.option__3.label",
+          "value": "top right"
+        },
+        {
+          "label": "t:sections.map.settings.image_position.option__4.label",
+          "value": "center left"
+        },
+        {
+          "label": "t:sections.map.settings.image_position.option__5.label",
+          "value": "center center"
+        },
+        {
+          "label": "t:sections.map.settings.image_position.option__6.label",
+          "value": "center right"
+        },
+        {
+          "label": "t:sections.map.settings.image_position.option__7.label",
+          "value": "bottom left"
+        },
+        {
+          "label": "t:sections.map.settings.image_position.option__8.label",
+          "value": "bottom center"
+        },
+        {
+          "label": "t:sections.map.settings.image_position.option__9.label",
+          "value": "bottom right"
+        }
+      ]
+    }
+  ],
+  "presets": [
+    {
+      "name": "t:sections.map.presets.name",
+      "category": "Store Information"
+    }
+  ]
+}
+{% endschema %}

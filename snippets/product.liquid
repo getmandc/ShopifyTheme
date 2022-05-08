@@ -1,0 +1,173 @@
+{% assign product_enable_select_an_option = false %}
+{% assign product_selectors_per_row_small = 1 %}
+{% assign product_selectors_per_row_medium = 1 %}
+{% assign product_selectors_per_row_large = 2 %}
+{% assign product_show_multi_selectors = true %}
+{% assign product_show_single_selector = false %}
+{% assign product_show_product_image_first = false %}
+{% assign product_thumbnails_per_row_small = 4 %}
+{% assign product_thumbnails_per_row_medium = 4 %}
+{% assign product_thumbnails_per_row_large = 6 %}
+{% assign product_class = product_class %}
+{% assign backorder_class = 'backorder-notice hidden lht' %}
+{% assign compare_at_class = 'price compare-at text-light font-size-14 fw-300 lht inline-block' %}
+{% assign from_class = 'from text-light font-size-14' %}
+{% assign sale_sticker_class = 'badge sale sale-sticker' %}
+{% assign price_class = 'price sell-price font-size-14 fw-600 lht inline-block' %}
+{% assign unit_price_class = 'price unit-price text-light font-size-12 lht inline-block' %}
+{% assign unit_price_separator_class = 'unit-price-separator text-light font-size-12 lht inline-block' %}
+{% assign unit_price_base_unit_class = 'unit-price-base-unit text-light font-size-12 lht inline-block' %}
+{% assign add_to_cart_button_class = 'add-to-cart button width-100' %}
+{% assign smart_payment_button_container_class = 'smart-payment-button-container' %}
+{% assign on_sale = false %}
+{% assign sold_out = false %}
+
+{% unless show_vendor %}
+  {% assign show_vendor = section.settings.show_vendor %}
+{% endunless %}
+
+{% unless show_from %}
+  {% assign show_from = section.settings.show_from %}
+{% endunless %}
+
+{% unless show_price %}
+  {% assign show_price = section.settings.show_price %}
+{% endunless %}
+
+{% unless show_compare_at_price %}
+  {% assign show_compare_at_price = section.settings.show_compare_at_price %}
+{% endunless %}
+
+{% unless show_unit_price %}
+  {% if template contains 'collection' %}
+    {% assign show_unit_price = show_price %}
+  {% else %}
+    {% assign show_unit_price = section.settings.show_unit_price %}
+  {% endif %}
+{% endunless %}
+
+{% unless show_variant_selector %}
+  {% assign show_variant_selector = section.settings.show_variant_selector %}
+{% endunless %}
+
+{% unless show_sale_sticker %}
+  {% assign show_sale_sticker = section.settings.show_sale_sticker %}
+{% endunless %}
+
+{% unless show_add_to_cart_button %}
+  {% assign show_add_to_cart_button = section.settings.show_add_to_cart_button %}
+{% endunless %}
+
+{% if location == 'secondary' %}
+  {% assign product_image_size = '800x600' %}
+{% else %}
+  {% assign product_image_size = '480x' %}
+{% endif %}
+
+{% assign variant = product.selected_or_first_available_variant %}
+{% assign price = product.price %}
+{% assign price_varies = product.price_varies %}
+{% assign compare_at_price = product.compare_at_price %}
+{% assign cheapest_variant = product.variants | sort: 'price' | first %}
+{% assign unit_price = cheapest_variant.unit_price %}
+{% assign unit_price_measurement = cheapest_variant.unit_price_measurement %}
+
+{% if product.compare_at_price > product.price %}
+  {% assign on_sale = true %}
+  {% assign product_class = product_class | append: ' on-sale' %}
+{% endif %}
+
+{% unless variant.available %}
+  {% assign sold_out = true %}
+  {% assign product_class = product_class | append: ' sold-out' %}
+{% endunless %}
+
+{% unless price_varies and show_from %}
+  {% assign from_class = from_class | append: ' hidden' %}
+{% endunless %}
+
+{% unless show_price %}
+  {% assign price_class = price_class | append: ' hidden' %}
+{% endunless %}
+
+{% unless on_sale and show_compare_at_price %}
+  {% assign compare_at_class = compare_at_class | append: ' hidden' %}
+{% endunless %}
+
+{% unless unit_price and unit_price_measurement and show_unit_price %}
+  {% assign unit_price_class = unit_price_class | append: ' hidden' %}
+  {% assign unit_price_separator_class = unit_price_separator_class | append: ' hidden' %}
+  {% assign unit_price_base_unit_class = unit_price_base_unit_class | append: ' hidden' %}
+{% endunless %}
+
+{% unless on_sale and show_sale_sticker %}
+  {% assign sale_sticker_class = sale_sticker_class | append: ' hidden' %}
+{% endunless %}
+
+{% if variant.inventory_policy == 'continue' and variant.inventory_quantity <= 0 %}
+  {% assign backorder_class = backorder_class | replace: ' hidden', '' %}
+{% endif %}
+
+{% unless variant.available %}
+  {% assign smart_payment_button_container_class = smart_payment_button_container_class | append: ' hidden' %}
+{% endunless %}
+
+{% if section.settings.enable_payment_button and variant.available %}
+  {% assign add_to_cart_button_class = add_to_cart_button_class | append: ' secondary' %}
+{% endif %}
+
+{% unless product.id %}
+  {% assign price = forloop.index | times: 5000 | plus: 5000 %}
+{% endunless %}
+
+<article id="{{ product.handle }}" class="{{ product_class }}">
+
+  {% assign product_link_url = product.url | within: collection %}
+  {% render 'image', image: product.featured_media, image_link_url: product_link_url, image_alt: product.featured_media.alt, focusable: true, image_ratio: section.settings.image_ratio %}
+
+  <div class="product-details">
+
+    <div class="title-wrap">
+
+      <header>
+        <h3 class="title font-size-16">
+          <a href="{{ product.url | within: collection }}" title="{{ product.title }}">{{ product.title }}</a>
+        </h3>
+      </header>
+
+      {% if show_vendor %}
+        <div class="vendor lht font-size-14">{{ product.vendor | link_to_vendor }}</div>
+      {% endif %}
+
+      {% if on_sale and show_sale_sticker %}
+        <span class="badge sale sale-sticker">{{ 'collections.on_sale_sticker' | t }}</span>
+      {% endif %}
+
+    </div>
+
+    {% render 'pricing', show_from: show_from, from_class: from_class, price: price, price_class: price_class, show_compare_at_price: show_compare_at_price, compare_at_price: compare_at_price, compare_at_class: compare_at_class, show_unit_price: show_unit_price, unit_price: unit_price, unit_price_class: unit_price_class, unit_price_separator_class: unit_price_separator_class, unit_price_base_unit_class: unit_price_base_unit_class, unit_price_measurement: unit_price_measurement %}
+
+    {% if show_add_to_cart_button %}
+      <div class="actions">
+        {% if product.has_only_default_variant or section.settings.view_options_mode == false %}
+          <form action="{{ routes.cart_add_url }}" method="post">
+            <input type="hidden" name="id" value="{{ variant.id }}" />
+            {% if show_add_to_cart_button %}
+              {% if product.available %}
+                <button class="add-to-cart button small" type="submit" data-cart-action="{{ settings.cart_type }}" data-template="{{ template }}">{{ 'products.add_to_cart' | t }}</button>
+              {% else %}
+                <button class="add-to-cart button small disabled" type="submit" disabled>{{ 'products.sold_out' | t }}</button>
+              {% endif %}
+            {% endif %}
+          </form>
+        {% else %}
+          <a href="{{ product.url }}" class="button small">{{ 'products.view_options' | t }}</a>
+        {% endif %}
+      </div>
+    {% endif %}
+
+  </div>
+
+  {% render 'json-ld-product', product: product %}
+
+</article>

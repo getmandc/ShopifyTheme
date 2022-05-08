@@ -1,0 +1,3 @@
+<form class="search" name="search" action="{{ routes.search_url }}" method="get" role="search">
+  <input class="search-text font-size-14" type="text" name="q" value="{{ search.terms | escape }}" placeholder="{{ 'general.search.input_placeholder_short' | t }}" aria-label="{{ 'general.search.input_placeholder_short' | t }}">
+</form>

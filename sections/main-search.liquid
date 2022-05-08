@@ -1,0 +1,328 @@
+{% assign date_format = '%B %d, %Y' %}
+
+{% assign title = 'shopify.page_titles.search' | t %}
+
+{{ 'filtering.css' | asset_url | stylesheet_tag }}
+
+<script src="{{ 'collection-filters.js' | asset_url }}" defer="defer"></script>
+
+{% if search.performed == false or search.results_count == 0 %}
+  {% render 'content-open', class: 'column-max padding-top-300 padding-bottom-300' %}
+{% else %}
+  {% render 'content-open', class: 'column-max' %}
+{% endif %}
+
+  {%- for block in section.blocks -%}
+    {%- case block.type -%}
+      {%- when '@app' -%}
+        <div class="app-block">
+          {% render block %}
+        </div>
+
+      {%- when 'header' -%}
+        {% render 'page-header', class: 'text-center', title: title %}
+
+      {%- when 'search-input' -%}
+
+      {%- when 'filter-sort' -%}
+        <style>
+        {% if block.settings.collapse_on_larger_devices %}
+          .collection-product-count {
+            grid-row: 2!important;
+          }
+        {% endif %}
+        </style>
+        {% render 'search-filter-sort', section: section, block: block %}
+
+      {%- when 'custom-liquid' -%}
+        {{ block.settings.custom_liquid }}
+
+      {%- when 'product-grid' -%}
+        <div id="SearchProductGrid">
+          {%- if search.results.size == 0 -%}
+            <div class="column-max min-100">
+              <div class="search-results">
+                <div class="loading-overlay" style="display:none;">
+                  <div class="loading-overlay__spinner">
+                    <svg class="spinner" xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24">
+                      <circle class="opacity-25" cx="12" cy="12" r="10" stroke="currentColor" stroke-width="4"></circle>
+                      <path class="opacity-75" fill="currentColor" d="M4 12a8 8 0 018-8V0C5.373 0 0 5.373 0 12h4zm2 5.291A7.962 7.962 0 014 12H0c0 3.042 1.135 5.824 3 7.938l3-2.647z"></path>
+                    </svg>
+                  </div>
+                </div>
+              </div>
+            </div>
+          {% endif %}
+        {% if search.performed %}
+          {% if search.results_count == 0 %}
+            {% render 'separator', class: 'lined margin-top margin-bottom' %}
+          {% endif %}
+
+          <div class="column-max">
+            {%-liquid
+              assign rest = block.settings.products_per_row | modulo: 2
+              if rest == 0
+                assign products_per_page = 28
+              else 
+                assign products_per_page = 30
+              endif
+            -%}
+            {% paginate search.results by products_per_page %}
+            <div class="search-results">
+              <div class="loading-overlay" style="display:none;">
+                <div class="loading-overlay__spinner">
+                  <svg class="spinner" xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24">
+                    <circle class="opacity-25" cx="12" cy="12" r="10" stroke="currentColor" stroke-width="4"></circle>
+                    <path class="opacity-75" fill="currentColor" d="M4 12a8 8 0 018-8V0C5.373 0 0 5.373 0 12h4zm2 5.291A7.962 7.962 0 014 12H0c0 3.042 1.135 5.824 3 7.938l3-2.647z"></path>
+                  </svg>
+                </div>
+              </div>
+
+              {% if block.settings.products_format == 'grid' %}
+              <style>
+                @media screen and (min-width: 640px) {
+                  .grid {
+                    grid-template-columns: repeat({{ block.settings.products_per_row}}, 1fr)!important;
+                  }
+                }
+              </style>
+              {% endif %}
+              <div class="{{ block.settings.products_format }}">
+                {% for result in search.results %}
+                  <div class="table search-result search-result-{{ result.object_type }}">
+
+                    {% if result.object_type == 'product' %}
+                      {% assign result_image = result.featured_media %}
+                    {% else %}
+                      {% assign result_image = result.image %}
+                    {% endif %}
+
+                    {% if result_image %}
+                      {% assign image_alt = result.title | escape %}
+                      <div class="cell image align-top text-center text-left-medium">
+                        {% render 'image', image: result_image, image_alt: image_alt, image_widths: '100, 200, 600', image_link_url: result.url, image_ratio: block.settings.image_ratio %}
+                      </div>
+                    {% endif %}
+
+                    <div class="cell content align-top">
+
+                      <div class="result-header table">
+                        <div class="cell{% if block.settings.products_format == 'grid' %} margin-top-50{% endif %}">
+                          <a class="result-title text-color {% if block.settings.products_format == 'grid' %}font-size-14{% else %}font-size-18{% endif %}" href="{{ result.url }}">{{ result.title }}</a>
+                          <div class="result-url text-light font-size-14">
+                            {{ result.object_type | capitalize }}
+                          </div>
+                        </div>
+
+                        {% if result.object_type == 'product' %}
+                          <div class="pricing cell text-right-medium font-size-16">
+                            {% assign product = result %}
+                            {% assign compare_at_class = 'price compare-at text-light font-size-14 fw-300 lht inline-block' %}
+                            {% assign from_class = 'from text-light font-size-14' %}
+                            {% assign price_class = 'price sell-price font-size-14 fw-600 lht inline-block' %}
+                            {% assign unit_price_class = 'price unit-price text-light font-size-12 lht inline-block' %}
+                            {% assign unit_price_separator_class = 'unit-price-separator text-light font-size-12 lht inline-block' %}
+                            {% assign unit_price_base_unit_class = 'unit-price-base-unit text-light font-size-12 lht inline-block' %}
+                            {% assign on_sale = false %}
+                            {% assign price = product.price %}
+                            {% assign price_varies = product.price_varies %}
+                            {% assign compare_at_price = product.compare_at_price %}
+                            {% assign cheapest_variant = product.variants | sort: 'price' | first %}
+                            {% assign unit_price = cheapest_variant.unit_price %}
+                            {% assign unit_price_measurement = cheapest_variant.unit_price_measurement %}
+                            {% if product.compare_at_price > product.price %}
+                              {% assign on_sale = true %}
+                            {% endif %}
+                            {% unless price_varies %}
+                              {% assign from_class = from_class | append: ' hidden' %}
+                            {% endunless %}
+                            {% unless unit_price and unit_price_measurement %}
+                              {% assign unit_price_class = unit_price_class | append: ' hidden' %}
+                              {% assign unit_price_separator_class = unit_price_separator_class | append: ' hidden' %}
+                              {% assign unit_price_base_unit_class = unit_price_base_unit_class | append: ' hidden' %}
+                            {% endunless %}
+                            {% unless on_sale %}
+                              {% assign compare_at_class = compare_at_class | append: ' hidden' %}
+                            {% endunless %}
+                            {% render 'pricing', show_from: true, from_class: from_class, price: price, price_class: price_class, show_compare_at_price: true, compare_at_price: compare_at_price, compare_at_class: compare_at_class, show_unit_price: false, unit_price: unit_price, unit_price_class: unit_price_class %}
+                          </div>
+                        {% endif %}
+                      </div>
+
+                      {% if block.settings.products_format == 'list' %}
+                      <div class="result-body font-size-14 margin-top-50">
+                        {% if result.object_type == 'article' and result.published_at %}{{ result.published_at | date: date_format }} &#8212; {% endif %}
+                        {{ result.content | strip_html | truncatewords: 30 | highlight: search.terms }}
+                      </div>
+                      {% endif %}
+
+                      {% if result.object_type == 'product' and block.settings.show_view_button %}
+                        <div class="actions margin-top-50">
+                          <a class="button small" href="{{ result.url }}">{{ 'general.search.view_product' | t }}</a>
+                        </div>
+                      {% endif %}
+                    </div>
+                  </div>
+
+                  {% if block.settings.products_format == 'list' %}
+                    {% unless forloop.last %}
+                      {% render 'separator', class: 'lined full margin-top margin-bottom' %}
+                    {% endunless %}
+                  {% endif %}
+
+                {% endfor %}
+              </div>
+            </div>
+
+            {% render 'pagination', paginate: paginate %}
+            {% endpaginate %}
+          </div>
+        {% endif %}
+        </div>
+
+      {%- when 'separator' -%}
+        {% render 'separator' %}
+
+    {%- endcase -%}
+  {%- endfor -%}
+
+{% render 'content-close' %}
+
+
+<script>
+  window.addEventListener('DOMContentLoaded', (e) => {
+    const desktopSearchInput = document.querySelector('.desktop-facets .search-text');
+    const mobileSearchInput = document.querySelector('.mobile-facets .search-text');
+
+    desktopSearchInput.addEventListener('input', e => {
+      mobileSearchInput.value = e.target.value;;
+    });
+  });
+</script>
+
+{% schema %}
+{
+  "name": "t:sections.main-search.name",
+  "blocks": [
+    {
+      "type": "@app"
+    },
+    {
+      "type": "header",
+      "name": "t:sections.main-search.blocks.header.name",
+      "limit": 1
+    },
+    {
+      "type": "filter-sort",
+      "name": "t:sections.main-search.blocks.filter-sort.name",
+      "limit": 1,
+      "settings": [
+        {
+          "type": "checkbox",
+          "id": "enable_filtering",
+          "default": true,
+          "label": "t:sections.main-search.blocks.filter-sort.settings.enable_filtering.label",
+          "info": "t:sections.main-search.blocks.filter-sort.settings.enable_filtering.info"
+        },
+        {
+          "type": "checkbox",
+          "id": "enable_sorting",
+          "label": "t:sections.main-search.blocks.filter-sort.settings.enable_sorting.label",
+          "default": true
+        },
+        {
+          "type": "checkbox",
+          "id": "collapse_on_larger_devices",
+          "default": false,
+          "label": "t:sections.main-search.blocks.filter-sort.settings.collapse_on_larger_devices.label"
+        },
+        {
+          "type": "range",
+          "id": "search_box_width",
+          "label": "t:sections.main-search.blocks.filter-sort.settings.search_box_width.label",
+          "min": 10,
+          "max": 100,
+          "step": 10,
+          "unit": "%",
+          "default": 100
+        }
+      ]
+    },
+    {
+      "type": "custom_liquid",
+      "name": "t:sections.main-search.blocks.custom_liquid.name",
+      "settings": [
+        {
+          "type": "liquid",
+          "id": "custom_liquid",
+          "label": "t:sections.main-search.blocks.custom_liquid.settings.custom_liquid.label",
+          "info": "t:sections.main-search.blocks.custom_liquid.settings.custom_liquid.info"
+        }
+      ]
+    },
+    {
+      "type": "product-grid",
+      "name": "t:sections.main-search.blocks.product-grid.name",
+      "limit": 1,
+      "settings": [
+        {
+          "type": "select",
+          "id": "products_format",
+          "label": "t:sections.main-search.blocks.product-grid.settings.products_format.label",
+          "options": [
+            {
+              "value": "list",
+              "label": "t:sections.main-search.blocks.product-grid.settings.products_format.option__1.label"
+            },
+            {
+              "value": "grid",
+              "label": "t:sections.main-search.blocks.product-grid.settings.products_format.option__2.label"
+            }
+          ],
+          "default": "grid"
+        },
+        {
+          "type": "range",
+          "id": "products_per_row",
+          "label": "t:sections.main-search.blocks.product-grid.settings.products_per_row.label",
+          "min": 2,
+          "max": 4,
+          "step": 1,
+          "default": 4
+        },
+        {
+          "type": "select",
+          "id": "image_ratio",
+          "label": "t:sections.main-search.blocks.product-grid.settings.image_ratio.label",
+          "options": [
+            {
+              "value": "adapt",
+              "label": "t:sections.main-search.blocks.product-grid.settings.image_ratio.option__1.label"
+            },
+            {
+              "value": "portrait",
+              "label": "t:sections.main-search.blocks.product-grid.settings.image_ratio.option__2.label"
+            },
+            {
+              "value": "square",
+              "label": "t:sections.main-search.blocks.product-grid.settings.image_ratio.option__3.label"
+            }
+          ],
+          "default": "adapt"
+        },
+        {
+          "type": "checkbox",
+          "id": "show_view_button",
+          "label": "t:sections.main-search.blocks.product-grid.settings.show_view_button.label",
+          "default": true
+        }
+      ]
+    },
+    {
+      "type": "separator",
+      "name": "t:sections.main-search.blocks.separator.name",
+      "limit": 6
+    }
+  ]
+}
+{% endschema %}

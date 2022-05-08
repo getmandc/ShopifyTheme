@@ -1,0 +1,37 @@
+{% assign social_networks_string = 'facebook,twitter,pinterest,instagram,tumblr,snapchat,youtube,vimeo' %}
+{% assign social_networks = social_networks_string | split: ',' %}
+{% assign social_networks_count = 0 %}
+
+<style>
+  #section-block-{{ block.type }}-{{ block.id }} i {
+    font-size: {{ block.settings.icon_size }}px;
+  }
+</style>
+
+<div class="social-media-icons">
+  {% for social_network in social_networks %}
+
+    {% assign social_network_link_setting = 'social_*1_link' | replace: '*1', social_network %}
+
+    {% case social_network %}
+      {% when 'youtube' %}
+        {% assign network_icon = 'youtube-play' %}
+      {% else %}
+        {% assign network_icon = social_network %}
+    {% endcase %}
+
+    {% if settings[social_network_link_setting] != blank %}
+      {% assign social_networks_count = social_networks_count | plus: 1 %}
+      <a class="social-media-icon inline-block text-color" href="{{ settings[social_network_link_setting] }}" data-target-new aria-label="{{ social_network }}">
+        <i class="fa fa-{{ network_icon }}"></i>
+        <span class="sr-only">{{ 'general.accessibility.link_messages.new_window_and_external' | t }}</span>
+      </a>
+    {% endif %}
+
+  {% endfor %}
+
+  {% if social_networks_count == 0 %}
+    <p>{{ 'onboarding.add_social_urls' | t }}</p>
+  {% endif %}
+
+</div>

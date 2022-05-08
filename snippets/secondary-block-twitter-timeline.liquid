@@ -1,0 +1,7 @@
+{% if settings.social_twitter_link != blank %}
+  {% assign twitter_username = settings.social_twitter_link | split: 'twitter.com/' | last %}
+{% else %}
+  {% assign twitter_username = 'shopify' %}
+{% endif %}
+
+<a class="twitter-timeline" data-height="{{ block.settings.height | escape }}" data-theme="{{ block.settings.style }}" data-link-color="{{ block.settings.link_color }}" href="https://twitter.com/{{ twitter_username }}"></a>

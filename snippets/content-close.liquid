@@ -1,0 +1,18 @@
+{% assign sc = 'secondary small-12 columns' %}
+{% assign tt = template %}
+
+{% if template contains '.' %}
+  {% assign tp = template | split: '.' %}
+  {% assign tt = tp[0] %}
+{% endif %}
+
+    </main>
+  </section>
+
+  {% if sidebar %}
+    {% render 'sidebar', class: sc, sidebar: sidebar %}
+  {% endif %}
+
+</div>
+
+{% assign class = nil %}

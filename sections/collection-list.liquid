@@ -1,0 +1,119 @@
+{% if section.blocks.size < section.settings.images_per_row_large %}
+  {% assign images_per_row_large = section.blocks.size %}
+{% else %}
+  {% assign images_per_row_large = section.settings.images_per_row_large %}
+{% endif %}
+
+{% render 'section-open', section: section, type: 'collection-list' %}
+
+  <div class="small-item-grid-1 medium-item-grid-2 large-item-grid-{{ images_per_row_large }}">
+    {% if section.blocks.size > 0 %}
+      {% for block in section.blocks %}
+        {% assign block_class = 'collection-grid-item item' %}
+        {% assign collection = collections[block.settings.collection] %}
+        {% if collection != empty %}
+          {% assign collection_item_count = collection.all_products_count %}
+          {% assign collection_title = collection.title %}
+          {% assign collection_url = collection.url %}
+          {% assign image_placeholder = false %}
+          {% if collection.image %}
+            {% assign collection_image = collection.image %}
+          {% else %}
+            {% assign collection_image = collection.products.first.featured_image %}
+          {% endif %}
+        {% else %}
+          {% assign collection_item_count = 10 %}
+          {% assign collection_title = 'onboarding.collection_title' | t %}
+          {% assign collection_url = '#' %}
+          {% assign image_placeholder = true %}
+        {% endif %}
+        {% render 'block-open', section: section, block: block, class: block_class %}
+          {% render 'image', image: collection_image, image_type: 'collection', image_placeholder: image_placeholder, image_link_url: collection.url %}
+          {% render 'separator', class: 'margin-top-50 no-margin-bottom' %}
+          <div class="collection-details">
+            <div class="collection-title lht"><a class="text-color" href="{{ collection_url }}">{{ collection_title }}</a></div>
+            <div class="collection-item-count text-light font-size-14">{{ 'collections.collection_list.item_count' | t: count: collection_item_count }}</div>
+          </div>
+        {% render 'block-close' %}
+      {% endfor %}
+    {% else %}
+      {% render 'no-blocks' %}
+    {% endif %}
+
+  </div>
+
+{% render 'section-close' %}
+
+
+{% schema %}
+{
+  "name": "t:sections.collection-list.name",
+  "class": "index-section section-collection-list",
+  "max_blocks": 5,
+  "settings": [
+    {
+      "type": "text",
+      "id": "title",
+      "label": "t:sections.collection-list.settings.title.label",
+      "default": "Collection list"
+    },
+    {
+      "id": "width",
+      "type": "select",
+      "label": "t:sections.collection-list.settings.width.label",
+      "options": [
+        {
+          "value": "column-max",
+          "label": "t:sections.collection-list.settings.width.option__1.label"
+        },
+        {
+          "value": "width-100",
+          "label": "t:sections.collection-list.settings.width.option__2.label"
+        }
+      ]
+    },
+    {
+      "type": "range",
+      "id": "images_per_row_large",
+      "label": "t:sections.collection-list.settings.images_per_row_large.label",
+      "min": 2,
+      "max": 5,
+      "step": 1,
+      "default": 4
+    }
+  ],
+  "blocks": [
+    {
+      "type": "collection",
+      "name": "t:sections.collection-list.blocks.collection.name",
+      "settings": [
+        {
+          "type": "collection",
+          "id": "collection",
+          "label": "t:sections.collection-list.blocks.collection.settings.collection.label"
+        }
+      ]
+    }
+  ],
+  "presets": [
+    {
+      "name": "t:sections.collection-list.presets.name",
+      "category": "Collection",
+      "blocks": [
+        {
+          "type": "collection"
+        },
+        {
+          "type": "collection"
+        },
+        {
+          "type": "collection"
+        },
+        {
+          "type": "collection"
+        }
+      ]
+    }
+  ]
+}
+{% endschema %}

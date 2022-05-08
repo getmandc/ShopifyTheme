@@ -1,0 +1,33 @@
+<script>
+  document.documentElement.className = document.documentElement.className.replace('no-js', 'js');
+  window.addEventListener('DOMContentLoaded', (e) => {
+    skupHideSpinner();
+    skupSetViewPortForMobile();
+  });
+
+  function skupHideSpinner() {
+    const loading = document.getElementById('loading');
+    if (! loading) {
+      return;
+    }
+    loading.style.opacity = '0';
+    loading.style.visibility = 'hidden';
+    setTimeout(function () {
+      loading.style.display = 'none';
+    }, 1000);
+  }
+
+  function skupSetViewPortForMobile() {
+    /*(function ($) {
+      var meta = $('head meta[name="viewport"]');
+      $("input, select, textarea").on('touchstart', function() {
+        meta.attr('content', 'width=device-width, initial-scale=1, user-scalable=0');
+      });
+      $("input, select, textarea").on('touchend', function() {
+        setTimeout(function () {
+          meta.attr('content', 'width=device-width, initial-scale=1, user-scalable=1');
+        }, 100);
+      });
+    }(jQuery.noConflict()));*/
+  }
+</script>

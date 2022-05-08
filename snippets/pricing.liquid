@@ -1,0 +1,19 @@
+{% comment %}
+  Variable assignments can be found in the set-product-vars.liquid snippet
+{% endcomment %}
+<div class="pricing lht">
+
+  <span class="{{ from_class }}">{{ 'products.from' | t }}</span>
+
+  {% render 'price', amount: price, class: price_class %}
+
+  {% if show_compare_at_price %}
+    {% render 'price', amount: compare_at_price, class: compare_at_class %}
+  {% endif %}
+
+  {% if show_unit_price %}
+    {% capture unit_price_separator %}<span class="{{ unit_price_separator_class }}" aria-hidden="true">&sol;</span><span class="{{ unit_price_separator_class }} visually-hidden">{{ 'products.per' | t }}</span>{% endcapture %}
+    {% capture unit_price_base_unit %}<span class="{{ unit_price_base_unit_class }}">{% if unit_price_measurement.reference_value != 1 %}{{ unit_price_measurement.reference_value }}{% endif %}{{ unit_price_measurement.reference_unit }}</span>{% endcapture %}<br><span class="{{ unit_price_class }}" data-price data-base-price="{{ unit_price }}" {{ ms }}>{{ unit_price | money_with_currency }}</span>{{ unit_price_separator }}{{ unit_price_base_unit }}
+  {% endif %}
+
+</div>

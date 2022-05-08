@@ -1,0 +1,36 @@
+{%- liquid
+  if section.settings.width
+    case section.settings.width
+      when 'width-100'
+        assign class = 'width-100 body-padding'
+        if body_padding == false
+          assign class = 'width-100'
+        endif
+      when 'column-max'
+        assign class = 'column-max no-padding-top'
+      when 'column-narrow'
+        assign class = 'column-narrow'
+      when 'column-extra-narrow'
+        assign class = 'column-extra-narrow'
+      else
+        assign class = class
+    endcase
+  endif
+-%}
+
+<div class="{{ class }}" data-section-id="{{ section.id }}" data-section-type="{{ type }}">
+
+{% unless title == false %}
+  {% if title == nil %}
+    {% if section.settings.title %}
+      {% assign title = section.settings.title %}
+    {% elsif section.settings.heading %}
+      {% assign title = section.settings.heading %}
+    {% endif %}
+  {% endif %}
+  {% unless title == blank %}
+    <h2 class="section-title mb-150 lhxt {{ title_class }}">{{ title }}</h2>
+  {% endunless %}
+{% endunless %}
+
+{% assign class = nil %}

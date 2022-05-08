@@ -1,0 +1,5 @@
+{% assign levels = block.settings.levels | times: 1 %}
+
+<nav class="nav-side triangle-indicators" data-close-kin="{{ block.settings.close_inactive }}" data-expanded="false" data-node-transition-duration="300">
+  {% render 'menu', menu: linklists[block.settings.menu], levels: levels %}
+</nav>

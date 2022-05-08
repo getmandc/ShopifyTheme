@@ -1,0 +1,166 @@
+{% render 'section-open', section: section, type: 'separator', title: false %}
+
+  <style>
+    #shopify-section-{{ section.id }} .separator {
+      {% if section.settings.line_color %}
+        border-bottom-color: {{ section.settings.line_color }};
+      {% endif %}
+      border-bottom-width: {{ section.settings.line_thickness | escape }};
+    }
+  </style>
+
+  {% assign class = class | append: ' ' | append: section.settings.margin_top %}
+  {% assign class = class | append: ' ' | append: section.settings.margin_bottom %}
+
+  {% if section.settings.show_line %}
+    {% assign class = class | append: ' lined' %}
+  {% endif %}
+
+  <div class="separator {{ class }} {{ section.settings.width }}" aria-hidden="true"></div>
+
+  {% assign class = nil %}
+
+{% render 'section-close' %}
+
+
+{% schema %}
+{
+  "name": "t:sections.separator.name",
+  "class": "index-section section-separator",
+  "settings": [
+    {
+      "type": "select",
+      "id": "margin_top",
+      "label": "t:sections.separator.settings.margin_top.label",
+      "options": [
+        {
+          "value": "no-margin-top",
+          "label": "t:sections.separator.settings.margin_top.option__1.label"
+        },
+        {
+          "value": "margin-top-50",
+          "label": "t:sections.separator.settings.margin_top.option__2.label"
+        },
+        {
+          "value": "margin-top",
+          "label": "t:sections.separator.settings.margin_top.option__3.label"
+        },
+        {
+          "value": "margin-top-150",
+          "label": "t:sections.separator.settings.margin_top.option__4.label"
+        },
+        {
+          "value": "margin-top-200",
+          "label": "t:sections.separator.settings.margin_top.option__5.label"
+        }
+      ]
+    },
+    {
+      "type": "select",
+      "id": "margin_bottom",
+      "label": "t:sections.separator.settings.margin_bottom.label",
+      "options": [
+        {
+          "value": "no-margin-bottom",
+          "label": "t:sections.separator.settings.margin_bottom.option__1.label"
+        },
+        {
+          "value": "margin-bottom-50",
+          "label": "t:sections.separator.settings.margin_bottom.option__2.label"
+        },
+        {
+          "value": "margin-bottom",
+          "label": "t:sections.separator.settings.margin_bottom.option__3.label"
+        },
+        {
+          "value": "margin-bottom-150",
+          "label": "t:sections.separator.settings.margin_bottom.option__4.label"
+        },
+        {
+          "value": "margin-bottom-200",
+          "label": "t:sections.separator.settings.margin_bottom.option__5.label"
+        }
+      ]
+    },
+    {
+      "type": "header",
+      "content": "t:sections.separator.settings.header__1.content"
+    },
+    {
+      "type": "checkbox",
+      "id": "show_line",
+      "label": "t:sections.separator.settings.show_line.label"
+    },
+    {
+      "type": "color",
+      "id": "line_color",
+      "label": "t:sections.separator.settings.line_color.label"
+    },
+    {
+      "type": "select",
+      "id": "width",
+      "label": "t:sections.separator.settings.width.label",
+      "options": [
+        {
+          "value": "",
+          "label": "t:sections.separator.settings.width.option__1.label"
+        },
+        {
+          "value": "wide",
+          "label": "t:sections.separator.settings.width.option__2.label"
+        },
+        {
+          "value": "x-wide",
+          "label": "t:sections.separator.settings.width.option__3.label"
+        },
+        {
+          "value": "full",
+          "label": "t:sections.separator.settings.width.option__4.label"
+        }
+      ]
+    },
+    {
+      "type": "select",
+      "id": "line_thickness",
+      "label": "t:sections.separator.settings.line_thickness.label",
+      "options": [
+        {
+          "value": "1px",
+          "label": "t:sections.separator.settings.line_thickness.option__1.label"
+        },
+        {
+          "value": "2px",
+          "label": "t:sections.separator.settings.line_thickness.option__2.label"
+        },
+        {
+          "value": "4px",
+          "label": "t:sections.separator.settings.line_thickness.option__3.label"
+        },
+        {
+          "value": "6px",
+          "label": "t:sections.separator.settings.line_thickness.option__4.label"
+        },
+        {
+          "value": "10px",
+          "label": "t:sections.separator.settings.line_thickness.option__5.label"
+        }
+      ],
+      "default": "1px"
+    }
+  ],
+  "presets": [
+    {
+      "name": "t:sections.separator.presets.name",
+      "category": "Layout",
+      "settings": {
+        "margin_top": "margin-top",
+        "margin_bottom": "margin-bottom",
+        "show_line": true,
+        "line_color": "#565656",
+        "width": "wide",
+        "line_thickness": "1px"
+      }
+    }
+  ]
+}
+{% endschema %}

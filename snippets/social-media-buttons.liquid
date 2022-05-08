@@ -1,0 +1,42 @@
+{% if template contains 'article' or template contains 'blog' %}
+  {% assign enable_pinterest = true %}
+  {% capture share_url %}{{ shop.url }}{{ article.url }}{% endcapture %}
+  {% capture share_media_url %}https:{{ article | img_url: '1024x1024' }}{% endcapture %}
+  {% capture share_title %}{{ article.title | url_param_escape }}{% endcapture %}
+  {% capture share_description %}{{ article.title }}{% endcapture %}
+{% elsif template contains 'product' %}
+  {% assign enable_pinterest = true %}
+  {% capture share_url %}{{ shop.url }}{{ product.url }}{% endcapture %}
+  {% capture share_media_url %}https:{{ product.featured_media.preview_image | img_url: '1024x1024' }}{% endcapture %}
+  {% capture share_title %}{{ product.title | url_param_escape }}{% endcapture %}
+  {% capture share_description %}{{ product.title }}{% endcapture %}
+{% elsif template == 'password' %}
+  {% assign enable_pinterest = true %}
+  {% capture share_url %}{{ shop.url }}{{ routes.root_url }}{% endcapture %}
+  {% capture share_title %}{% unless shop.description == blank %}{{ shop.description | url_param_escape }}{% else %}{{ shop.name | url_param_escape }}{% endunless %}{% endcapture %}
+{% endif %}
+
+<div class="social-media-buttons {{ settings.social_sharing_style }} {{ class }}" data-permalink="{{ share_url }}">
+
+  {% if settings.share_facebook %}
+    <div class="share-button facebook">
+      <div class="fb-like" data-href="{{ share_url }}" data-layout="button_count" data-action="like" data-show-faces="false" data-share="true"></div>
+    </div>
+  {% endif %}
+  
+  {% if settings.share_twitter %}
+    <div class="share-button twitter">
+      <a href="http://twitter.com/share" data-url="{{ share_url }}" data-text="{{ 'general.social.share_on_twitter' | t }}" class="twitter-share-button" data-count="none">{{ 'general.social.share_on_twitter' | t }}</a>
+    </div>
+  {% endif %}
+
+  {% if settings.share_pinterest and enable_pinterest %}
+    <div class="share-button pinterest">
+      <a data-pin-do="buttonPin" data-pin-color="white" data-pin-media="{{ share_media_url }}" data-pin-description="{{ share_description }}" href="https://www.pinterest.com/pin/create/button/"></a>
+      <script async defer src="//assets.pinterest.com/js/pinit.js"></script>
+    </div>
+  {% endif %}
+
+</div>
+
+{% assign class = nil %}

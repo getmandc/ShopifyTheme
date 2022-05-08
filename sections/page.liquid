@@ -1,0 +1,110 @@
+{%- assign page = pages[section.settings.page] -%}
+
+{%- liquid
+  if section.settings.title != blank
+    assign title = section.settings.title
+  elsif page.title != blank
+    assign title = page.title
+  else
+    assign title = 'onboarding.page_title' | t
+  endif
+
+  assign title_align = section.settings.title_align
+  assign title_class = 'text-' | append: title_align
+  assign content_align = section.settings.content_align
+-%}
+
+{% render 'section-open', section: section, type: 'rich-text', title: title, title_class: title_class %}
+
+  <div class="rte text-{{content_align}}">
+    {%- unless page.content == blank -%}
+      {{ page.content }}
+    {%- else -%}
+      <div class='page-placeholder-wrapper'>
+        {{ 'page' | placeholder_svg_tag: 'page-placeholder placeholder-svg' }}
+      </div>
+    {%- endunless -%}
+  </div>
+
+{% render 'section-close' %}
+
+{% schema %}
+{
+  "name": "t:sections.page.name",
+  "class": "section-page",
+  "settings": [
+    {
+      "type": "page",
+      "id": "page",
+      "label": "t:sections.page.settings.page.label"
+    },
+    {
+      "type": "text",
+      "id": "title",
+      "label": "t:sections.page.settings.title.label"
+    },
+    {
+      "id": "width",
+      "type": "select",
+      "label": "t:sections.page.settings.width.label",
+      "options": [
+        {
+          "value": "column-max",
+          "label": "t:sections.page.settings.width.option__1.label"
+        },
+        {
+          "value": "width-100",
+          "label": "t:sections.page.settings.width.option__2.label"
+        }
+      ],
+      "default": "column-max"
+    },
+    {
+      "type": "select",
+      "id": "title_align",
+      "label": "t:sections.page.settings.title_align.label",
+      "options": [
+        {
+          "value": "left",
+          "label": "t:sections.page.settings.title_align.option__1.label"
+        },
+        {
+          "value": "center",
+          "label": "t:sections.page.settings.title_align.option__2.label"
+        },
+        {
+          "value": "right",
+          "label": "t:sections.page.settings.title_align.option__3.label"
+        }
+      ],
+      "default": "center"
+    },
+    {
+      "type": "select",
+      "id": "content_align",
+      "label": "t:sections.page.settings.content_align.label",
+      "options": [
+        {
+          "value": "left",
+          "label": "t:sections.page.settings.content_align.option__1.label"
+        },
+        {
+          "value": "center",
+          "label": "t:sections.page.settings.content_align.option__2.label"
+        },
+        {
+          "value": "right",
+          "label": "t:sections.page.settings.content_align.option__3.label"
+        }
+      ],
+      "default": "left"
+    }
+  ],
+  "presets": [
+    {
+      "name": "t:sections.page.presets.name",
+      "category": "Text"
+    }
+  ]
+}
+{% endschema %}

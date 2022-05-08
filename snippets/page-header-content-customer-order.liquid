@@ -1,0 +1,9 @@
+{% assign reorder_url = nil %}
+
+{% for line_item in order.line_items %}
+  {% capture reorder_url %}{{ reorder_url | append: line_item.variant_id | append: ':' | append: line_item.quantity | append: ',' }}{% endcapture %}
+{% endfor %}
+
+{% render 'separator', class: 'margin-top-50 no-margin-bottom hide-for-large' %}
+
+<a class="button small" href="{{ routes.cart_url | append: '/' | append: reorder_url }}">{{ 'customer.orders.reorder' | t }}</a>

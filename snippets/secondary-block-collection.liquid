@@ -1,0 +1,20 @@
+{% assign collection = collections[block.settings.collection] %}
+
+{% if collection != empty %}
+  {% if collection.products.size > 0 %}
+    {% for product in collection.products limit: block.settings.product_limit %}
+      {% unless forloop.first %}
+        {% render 'separator', class: 'margin-top-50 margin-bottom-50' %}
+      {% endunless %}
+      {% render 'product', collection: collection, product: product, location: 'secondary', product_class: 'item collection-product', show_add_to_cart_button: block.settings.show_add_to_cart_button, show_compare_at_price: block.settings.show_compare_at_price, show_from: block.settings.show_from, show_price: block.settings.show_price, show_sale_sticker: block.settings.show_sale_sticker, show_variant_selector: block.settings.show_variant_selector, show_vendor: block.settings.show_vendor %}
+    {% endfor %}
+  {% else %}
+    <div class="no-content">
+      <p class="no-margin">{{ 'collections.empty_html' | t }}</p>
+    </div>
+  {% endif %}
+{% else %}
+  <div class="no-content">
+    <p class="no-margin">{{ 'onboarding.select_collection' | t }}</p>
+  </div>
+{% endif %}

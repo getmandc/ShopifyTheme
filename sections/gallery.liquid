@@ -1,0 +1,102 @@
+{% if section.blocks.size < section.settings.images_per_row_large %}
+  {% assign images_per_row_large = section.blocks.size %}
+{% else %}
+  {% assign images_per_row_large = section.settings.images_per_row_large %}
+{% endif %}
+
+{% render 'section-open', section: section, type: 'gallery' %}
+
+  <div class="small-item-grid-1 medium-item-grid-2 large-item-grid-{{ images_per_row_large }}">
+    {% for block in section.blocks %}
+      {% render 'block-open', section: section, block: block, class: 'item' %}
+        {% if block.settings.image != blank %}
+          {% render 'image', image: block.settings.image, image_type: 'gallery', image_link_url: block.settings.image_link_url %}
+        {% else %}
+          {% render 'image', image_placeholder: true %}
+        {% endif %}
+      {% render 'block-close' %}
+    {% endfor %}
+  </div>
+
+{% render 'section-close' %}
+
+
+{% schema %}
+{
+  "name": "t:sections.gallery.name",
+  "class": "index-section section-gallery",
+  "max_blocks": 12,
+  "settings": [
+    {
+      "type": "text",
+      "id": "title",
+      "label": "t:sections.gallery.settings.title.label"
+    },
+    {
+      "id": "width",
+      "type": "select",
+      "label": "t:sections.gallery.settings.width.label",
+      "options": [
+        {
+          "value": "column-max",
+          "label": "t:sections.gallery.settings.width.option__1.label"
+        },
+        {
+          "value": "width-100",
+          "label": "t:sections.gallery.settings.width.option__2.label"
+        }
+      ]
+    },
+    {
+      "type": "range",
+      "id": "images_per_row_large",
+      "label": "t:sections.gallery.settings.images_per_row_large.label",
+      "min": 1,
+      "max": 12,
+      "step": 1,
+      "default": 3
+    }
+  ],
+  "blocks": [
+    {
+      "type": "image",
+      "name": "t:sections.gallery.blocks.image.name",
+      "settings": [
+        {
+          "id": "image",
+          "type": "image_picker",
+          "label": "t:sections.gallery.blocks.image.settings.image.label"
+        },
+        {
+          "id": "image_link_url",
+          "type": "url",
+          "label": "t:sections.gallery.blocks.image.settings.image_link_url.label"
+        }
+      ]
+    }
+  ],
+  "presets": [
+    {
+      "name": "t:sections.gallery.presets.name",
+      "category": "Image",
+      "settings": {
+        "images_per_row_large": 3
+      },
+      "blocks": [
+        {
+          "type": "image",
+          "settings": {}
+        },
+        {
+          "type": "image",
+          "settings": {}
+        },
+        {
+          "type": "image",
+          "settings": {}
+        }
+      ]
+    }
+  ]
+}
+{% endschema %}

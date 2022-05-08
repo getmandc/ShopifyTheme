@@ -1,0 +1,71 @@
+{% assign brand_font = settings.typo_brand_font %}
+{% assign brand_font_bold = brand_font | font_modify: 'weight', 'bolder' %}
+
+{% unless brand_font_bold %}
+  {% assign brand_font_bold = brand_font | font_modify: 'weight', 'bold' %}
+{% endunless %}
+
+{% assign brand_font_italic = brand_font | font_modify: 'style', 'italic' %}
+{% assign brand_font_bold_italic = brand_font_bold | font_modify: 'style', 'italic' %}
+
+<link rel="preload" as="font" href="{{ brand_font | font_url }}" type="font/woff2" crossorigin="anonymous"/>
+
+{% if brand_font_bold %}
+  <link rel="preload" as="font" href="{{ brand_font_bold | font_url }}" type="font/woff2" crossorigin="anonymous"/>
+{% endif %}
+
+{% if brand_font_italic %}
+  <link rel="preload" as="font" href="{{ brand_font_italic | font_url }}" type="font/woff2" crossorigin="anonymous"/>
+{% endif %}
+
+{% if brand_font_bold_italic %}
+  <link rel="preload" as="font" href="{{ brand_font_bold_italic | font_url }}" type="font/woff2" crossorigin="anonymous"/>
+{% endif %}
+
+{% assign main_menu_font = settings.typo_main_menu_font %}
+{% assign main_menu_font_bold = main_menu_font | font_modify: 'weight', 'bolder' %}
+
+{% unless main_menu_font_bold %}
+  {% assign main_menu_font_bold = main_menu_font | font_modify: 'weight', 'bold' %}
+{% endunless %}
+
+{% assign main_menu_font_italic = main_menu_font | font_modify: 'style', 'italic' %}
+{% assign main_menu_font_bold_italic = main_menu_font_bold | font_modify: 'style', 'italic' %}
+
+<link rel="preload" as="font" href="{{ main_menu_font | font_url }}" type="font/woff2" crossorigin="anonymous"/>
+
+{% if main_menu_font_bold %}
+  <link rel="preload" as="font" href="{{ main_menu_font_bold | font_url }}" type="font/woff2" crossorigin="anonymous"/>
+{% endif %}
+
+{% if main_menu_font_italic %}
+  <link rel="preload" as="font" href="{{ main_menu_font_italic | font_url }}" type="font/woff2" crossorigin="anonymous"/>
+{% endif %}
+
+{% if main_menu_font_bold_italic %}
+  <link rel="preload" as="font" href="{{ main_menu_font_bold_italic | font_url }}" type="font/woff2" crossorigin="anonymous"/>
+{% endif %}
+
+{% assign primary_font = settings.typo_primary_font %}
+{% assign primary_font_bold = primary_font | font_modify: 'weight', 'bolder' %}
+
+{% unless primary_font_bold %}
+  {% assign primary_font_bold = primary_font | font_modify: 'weight', 'bold' %}
+{% endunless %}
+
+{% assign primary_font_italic = primary_font | font_modify: 'style', 'italic' %}
+{% assign primary_font_bold_italic = primary_font_bold | font_modify: 'style', 'italic' %}
+
+<link rel="preload" as="font" href="{{ primary_font | font_url }}" type="font/woff2" crossorigin="anonymous"/>
+
+{% if primary_font_bold %}
+  <link rel="preload" as="font" href="{{ primary_font_bold | font_url }}" type="font/woff2" crossorigin="anonymous"/>
+{% endif %}
+
+{% if primary_font_italic %}
+  <link rel="preload" as="font" href="{{ primary_font_italic | font_url }}" type="font/woff2" crossorigin="anonymous"/>
+{% endif %}
+
+{% if primary_font_bold_italic %}
+  <link rel="preload" as="font" href="{{ primary_font_bold_italic | font_url }}" type="font/woff2" crossorigin="anonymous"/>
+{% endif %}

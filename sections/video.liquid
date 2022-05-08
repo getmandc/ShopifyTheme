@@ -1,0 +1,82 @@
+{% render 'section-open', section: section, type: 'video', body_padding: false %}
+
+  <style>
+    #shopify-section-{{ section.id }} .video-wrap {
+      max-width: {{ section.settings.video_max_width}}%;
+      margin: 0 auto;
+    }
+  </style>
+
+  {% if section.settings.video_url != blank %}
+    <div class="video-wrap fit-video">
+      {% if section.settings.video_url.type == 'youtube' %}
+        <iframe src="https://www.youtube.com/embed/{{ section.settings.video_url.id }}" width="850" height="480" title="{{ section.settings.title }}" frameborder="0" sandbox="allow-scripts allow-same-origin allow-presentation" allowfullscreen></iframe>
+      {% elsif section.settings.video_url.type == 'vimeo' %}
+        <iframe src="https://player.vimeo.com/video/{{ section.settings.video_url.id }}?color={{ settings.color_accent | replace: '#', '' }}" title="{{ section.settings.title }}" width="850" height="480"  frameborder="0" webkitallowfullscreen mozallowfullscreen allowfullscreen></iframe>
+      {% endif %}
+    </div>
+  {% else %}
+    <div class="text-center margin-top margin-bottom">
+      <style>svg.icon-youtube-play {width: 4rem;}</style>
+      {% render 'icon-youtube-play' %}
+    </div>
+  {% endif %}
+
+{% render 'section-close' %}
+
+{% schema %}
+{
+  "name": "t:sections.video.name",
+  "class": "index-section section-video",
+  "settings": [
+    {
+      "type": "text",
+      "id": "title",
+      "label": "t:sections.video.settings.title.label",
+      "default": "Video title"
+    },
+    {
+      "id": "width",
+      "type": "select",
+      "label": "t:sections.video.settings.width.label",
+      "options": [
+        {
+          "value": "column-max",
+          "label": "t:sections.video.settings.width.option__1.label"
+        },
+        {
+          "value": "width-100",
+          "label": "t:sections.video.settings.width.option__2.label"
+        }
+      ]
+    },
+    {
+      "type": "video_url",
+      "id": "video_url",
+      "label": "t:sections.video.settings.video_url.label",
+      "accept": [
+        "youtube",
+        "vimeo"
+      ],
+      "default": "https://www.youtube.com/watch?v=_9VUPq3SxOc"
+    },
+    {
+      "type": "range",
+      "id": "video_max_width",
+      "label": "t:sections.video.settings.video_max_width.label",
+      "min": 10,
+      "max": 100,
+      "step": 10,
+      "unit": "t:sections.video.settings.video_max_width.unit",
+      "default": 100
+    }
+  ],
+  "presets": [
+    {
+      "name": "t:sections.video.presets.name",
+      "category": "Video",
+      "settings": {}
+    }
+  ]
+}
+{% endschema %}

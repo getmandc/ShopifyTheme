@@ -1,0 +1,9 @@
+{% unless form_errors_class %}
+  {% assign form_errors_class = 'panel red text-center font-size-15' %}
+{% endunless %}
+
+{% if form.errors %}
+  <div class="{{ form_errors_class }}" role="alert" {% if focus_on_error %} data-form-status {% endif %}>
+    {{ form.errors | default_errors }}
+  </div>
+{% endif %}

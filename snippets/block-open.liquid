@@ -1,0 +1,11 @@
+<section id="section-block-{{ block.type }}-{{ block.id }}" class="section-block section-block-{{ block.type }}{% if class %} {{ class }}{% endif %}" {{ block.shopify_attributes }} data-block-id="{{ block.id }}">
+
+{% if block.settings.title != blank %}
+  <header class="section-block-header">
+    <h2 class="section-block-header-heading lhxt">
+      {{ block.settings.title }}
+    </h2>
+  </header>
+{% endif %}
+
+{% assign class = nil %}

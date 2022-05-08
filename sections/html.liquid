@@ -1,0 +1,48 @@
+{% render 'section-open', section: section, type: 'html' %}
+
+  {{ section.settings.html }}
+
+{% render 'section-close' %}
+
+
+{% schema %}
+{
+  "name": "t:sections.html.name",
+  "class": "index-section section-custom-html",
+  "settings": [
+    {
+      "type": "text",
+      "id": "title",
+      "label": "t:sections.html.settings.title.label",
+      "default": "Talk about your brand"
+    },
+    {
+      "id": "width",
+      "type": "select",
+      "label": "t:sections.html.settings.width.label",
+      "options": [
+        {
+          "value": "column-max",
+          "label": "t:sections.html.settings.width.option__1.label"
+        },
+        {
+          "value": "width-100",
+          "label": "t:sections.html.settings.width.option__2.label"
+        }
+      ]
+    },
+    {
+      "id": "html",
+      "type": "html",
+      "label": "t:sections.html.settings.html.label",
+      "default": "<p>Use HTML to format your text so it can be easily read. This text can be used to share information about your brand with customers.</p>"
+    }
+  ],
+  "presets": [
+    {
+      "name": "t:sections.html.presets.name",
+      "category": "Advanced"
+    }
+  ]
+}
+{% endschema %}

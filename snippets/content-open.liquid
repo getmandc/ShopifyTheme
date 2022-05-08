@@ -1,0 +1,22 @@
+{% assign cc = class %}
+{% assign pc = 'primary small-12 columns' %}
+{% assign tt = template %}
+
+{% if template contains '.' %}
+  {% assign tp = template | split: '.' %}
+  {% assign tt = tp[0] %}
+{% endif %}
+
+{% unless cc contains 'padding-top' %}
+  {% assign cc = cc | append: ' padding-top' %}
+{% endunless %}
+
+{% unless cc contains 'padding-bottom' %}
+  {% assign cc = cc | append: ' padding-bottom-200' %}
+{% endunless %}
+
+{% assign class = nil %}
+
+<div id="content-wrap" class="row {{ cc }}">
+  <section class="{{ pc }}">
+    <main role="main">

@@ -1,0 +1,11 @@
+{% assign excluded_collections = block.settings.exclude | escape | replace: ' ', '' | split: ',' %}
+
+<nav class="nav-side triangle-indicators" data-close-kin="false" data-expanded="false" data-node-transition-duration="300">
+  <ul class="side-nav">
+    {% for collection in collections %}
+      {% unless excluded_collections contains collection.handle %}
+        <li>{{ collection.title | link_to: collection.url }}</li>
+      {% endunless %}
+    {% endfor %}
+  </ul>
+</nav>

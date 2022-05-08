@@ -1,0 +1,143 @@
+<style>
+  #shopify-section-{{ section.id }} .breadcrumbs a {
+    font-size: {% render 'rem', value: section.settings.font_size %};
+    color: {{ section.settings.text_color }};
+  }
+  #shopify-section-{{ section.id }} .breadcrumbs a:not(:first-of-type):before {
+    color: {{ section.settings.text_color }};
+    content: "{{ section.settings.separator }}";
+  }
+</style>
+
+{% render 'breadcrumbs', section: section %}
+
+{% schema %}
+{
+  "name": "t:sections.breadcrumbs.name",
+  "class": "index-section section-separator",
+  "settings": [
+    {
+      "type": "select",
+      "id": "width",
+      "label": "t:sections.breadcrumbs.settings.width.label",
+      "options": [
+        {
+          "value": "column-max",
+          "label": "t:sections.breadcrumbs.settings.width.option__1.label"
+        },
+        {
+          "value": "column-100 body-padding",
+          "label": "t:sections.breadcrumbs.settings.width.option__2.label"
+        }
+      ],
+      "default": "column-max"
+    },
+    {
+      "type": "select",
+      "id": "margin_top",
+      "label": "t:sections.breadcrumbs.settings.margin_top.label",
+      "options": [
+        {
+          "value": "no-margin-top",
+          "label": "t:sections.breadcrumbs.settings.margin_top.option__1.label"
+        },
+        {
+          "value": "margin-top-50",
+          "label": "t:sections.breadcrumbs.settings.margin_top.option__2.label"
+        },
+        {
+          "value": "margin-top",
+          "label": "t:sections.breadcrumbs.settings.margin_top.option__3.label"
+        },
+        {
+          "value": "margin-top-150",
+          "label": "t:sections.breadcrumbs.settings.margin_top.option__4.label"
+        },
+        {
+          "value": "margin-top-200",
+          "label": "t:sections.breadcrumbs.settings.margin_top.option__5.label"
+        }
+      ],
+      "default": "margin-top-50"
+    },
+    {
+      "type": "select",
+      "id": "margin_bottom",
+      "label": "t:sections.breadcrumbs.settings.margin_bottom.label",
+      "options": [
+        {
+          "value": "no-margin-bottom",
+          "label": "t:sections.breadcrumbs.settings.margin_bottom.option__1.label"
+        },
+        {
+          "value": "margin-bottom-50",
+          "label": "t:sections.breadcrumbs.settings.margin_bottom.option__2.label"
+        },
+        {
+          "value": "margin-bottom",
+          "label": "t:sections.breadcrumbs.settings.margin_bottom.option__3.label"
+        },
+        {
+          "value": "margin-bottom-150",
+          "label": "t:sections.breadcrumbs.settings.margin_bottom.option__4.label"
+        },
+        {
+          "value": "margin-bottom-200",
+          "label": "t:sections.breadcrumbs.settings.margin_bottom.option__5.label"
+        }
+      ]
+    },
+    {
+      "type": "header",
+      "content": "t:sections.breadcrumbs.settings.header__1.content"
+    },
+    {
+      "type": "color",
+      "id": "text_color",
+      "label": "t:sections.breadcrumbs.settings.text_color.label",
+      "default": "#747474"
+    },
+    {
+      "type": "range",
+      "id": "font_size",
+      "label": "t:sections.breadcrumbs.settings.font_size.label",
+      "min": 10,
+      "max": 16,
+      "step": 1,
+      "unit": "t:sections.breadcrumbs.settings.font_size.unit",
+      "default": 11
+    },
+    {
+      "type": "text",
+      "id": "separator",
+      "label": "t:sections.breadcrumbs.settings.separator.label",
+      "default": "›",
+      "info": "t:sections.breadcrumbs.settings.separator.info",
+      "placeholder": "›"
+    }
+  ],
+  "presets": [
+    {
+      "name": "t:sections.breadcrumbs.presets.name",
+      "category": "Layout",
+      "settings": {
+        "width": "column-max",
+        "margin_top": "margin-top-50",
+        "margin_bottom": "no-margin-bottom",
+        "text_color": "#A9AAAA",
+        "font_size": 11,
+        "separator": "›"
+      }
+    }
+  ],
+  "templates": [
+    "blog",
+    "page",
+    "cart",
+    "article",
+    "product",
+    "collection",
+    "list-collections"
+  ]
+}
+{% endschema %}

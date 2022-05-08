@@ -1,0 +1,68 @@
+{% render 'content-open', class: 'column-max padding-top-200 padding-bottom-200' %}
+
+  <div class="column-extra-narrow">
+
+    {% render 'page-header', class: 'text-center' %}
+
+    <p class="message text-center text-light margin-top">{{ 'customer.register.message_html' | t }}</p>
+
+    {%- assign formId = 'RegisterForm' -%}
+    {% form 'create_customer', id: formId %}
+
+      {% render 'form-errors', form: form, focus_on_error: true %}
+
+      <div class="row">
+        <input type="text" id="first_name" name="customer[first_name]" value="{{ form.first_name }}" placeholder="{{ 'customer.register.first_name_field_placeholder' | t }}" aria-label="{{ 'customer.register.first_name_field_placeholder' | t }}" {% unless form.errors %} data-auto-focus {% endunless %}>
+        {% render 'field-error-message', form: form, field: 'first_name' %}
+      </div>
+
+      <div class="row">
+        <input type="text" id="last_name" name="customer[last_name]" value="{{ form.last_name }}" placeholder="{{ 'customer.register.last_name_field_placeholder' | t }}" aria-label="{{ 'customer.register.last_name_field_placeholder' | t }}">
+        {% render 'field-error-message', form: form, field: 'last_name' %}
+      </div>
+
+      <div class="row">
+        <input type="email" id="email" name="customer[email]" value="{{ form.email }}" placeholder="{{ 'customer.register.email_field_placeholder' | t }}" aria-label="{{ 'customer.register.email_field_placeholder' | t }}"
+        autocorrect="off"
+        autocapitalize="off"
+        autocomplete="email"
+        required="true"
+        {%- if form.errors contains 'email' -%}
+          class="error"
+          aria-invalid="true"
+          aria-describedby="{{ formId }}-email-error"
+        {%- endif -%}>
+        {% render 'field-error-message', form: form, field: 'email' %}
+      </div>
+
+      <div class="row">
+        <input type="password" id="password" name="customer[password]" value="{{ form.password }}" placeholder="{{ 'customer.register.password_field_placeholder' | t }}"
+        aria-label="{{ 'customer.register.password_field_placeholder' | t }}"
+        required="true"
+        {%- if form.errors contains 'password' -%}
+          class="error"
+          aria-invalid="true"
+          aria-describedby="{{ formId }}-password-error"
+        {%- endif -%}>
+        {% render 'field-error-message', form: form, field: 'password' %}
+      </div>
+
+      <div class="form-actions text-center width-100">
+
+        <p class="no-margin-bottom">
+          <input class="button" type="submit" value="{{ 'customer.register.submit' | t }}">
+        </p>
+
+        {% render 'separator', class: 'lined margin-top-150 margin-bottom' %}
+
+        <p class="font-size-15 no-margin-bottom">
+          <a href="#" data-click-history-back>{{ 'customer.register.cancel' | t }}</a>
+        </p>
+
+      </div>
+
+    {% endform %}
+
+  </div>
+
+{% render 'content-close' %}

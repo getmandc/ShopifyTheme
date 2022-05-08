@@ -1,0 +1,19 @@
+{% assign video_class = 'video-wrap' %}
+
+{% if block.settings.make_responsive %}
+  {% assign video_class = video_class | append: ' fit-video' %}
+{% endif %}
+
+{% if block.settings.video_url != blank %}
+  <div class="{{ video_class }}">
+    {% if block.settings.video_url.type == 'youtube' %}
+      <iframe src="https://www.youtube.com/embed/{{ block.settings.video_url.id }}" width="{{ block.settings.video_width | escape }}" height="{{ block.settings.video_height | escape }}" frameborder="0" allowfullscreen></iframe>
+    {% elsif block.settings.video_url.type == 'vimeo' %}
+      <iframe src="https://player.vimeo.com/video/{{ block.settings.video_url.id }}?color={{ settings.color_accent | replace: '#', '' }}" width="{{ block.settings.video_width | escape }}" height="{{ block.settings.video_height | escape }}" frameborder="0" webkitallowfullscreen mozallowfullscreen allowfullscreen></iframe>
+    {% endif %}
+  </div>
+{% else %}
+  <div class="text-center margin-top margin-bottom">
+    <i class="fa fa-youtube-play fa-4x"></i>
+  </div>
+{% endif %}

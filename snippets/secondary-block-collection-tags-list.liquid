@@ -1,0 +1,17 @@
+{% if collection %}
+
+  {% assign excluded_tags = block.settings.exclude_tags | escape | replace: ' ', '' | split: ',' %}
+
+  <nav class="nav-side triangle-indicators" data-close-kin="false" data-expanded="false" data-node-transition-duration="300">
+    <ul class="side-nav">
+      {% for tag in collection.tags %}
+        {% unless excluded_tags contains tag %}
+          <li class="{{ tag | handle }}{% if current_tags contains tag %} active{% endif %}">
+            {{ tag | link_to_tag: tag }}
+          </li>
+        {% endunless %}
+      {% endfor %}
+    </ul>
+  </nav>
+
+{% endif %}

@@ -1,0 +1,113 @@
+{% assign date_format = '%B %d, %Y' %}
+
+{% assign sidebar = 'sidebar-customers-account' %}
+
+{% assign title = 'shopify.page_titles.account' | t %}
+
+<div class="column-max">
+  {% render 'breadcrumbs' %}
+</div>
+
+{% render 'content-open', class: 'column-max no-padding-top', sidebar: sidebar %}
+
+  {% render 'page-header', title: title %}
+
+  {% render 'separator' %}
+
+  <div id="order-history">
+    {% if customer.orders.size > 0 %}
+      {% paginate customer.orders by 20 %}
+
+      <p class="no-margin">{{ 'customer.orders.order_history' | t }}</p>
+
+      {% render 'separator', class: 'lined full margin-top-50 margin-bottom' %}
+
+      <div class="customer-orders">
+        {% for order in customer.orders %}
+
+          {% assign reorder_url = nil %}
+
+          {% for line_item in order.line_items %}
+            {% capture reorder_url %}{{ reorder_url | append: line_item.variant_id | append: ':' | append: line_item.quantity | append: ',' }}{% endcapture %}
+          {% endfor %}
+
+          <div class="row">
+
+            <div class="name columns large-2">
+              <strong><a class="text-color font-size-18" href="{{ order.customer_url }}">{{ order.name }}</a></strong>
+            </div>
+
+            <div class="meta columns large-7 lht">
+
+              {% render 'separator', class: 'margin-top-50 no-margin-bottom hide-for-large' %}
+
+              <div class="small-item-grid-1 medium-item-grid-2 row-spacing-50">
+
+                <div class="item">
+                  <div class="label font-size-13 text-light">
+                    {{ 'customer.order.placed' | t }}
+                  </div>
+                  <div class="value font-size-15">
+                    {{ order.created_at | date: date_format }}
+                  </div>
+                </div>
+
+                <div class="item">
+                  <div class="label font-size-13 text-light">
+                    {{ 'customer.order.total' | t }}
+                  </div>
+                  <div class="value font-size-15">
+                    {% render 'price', amount: order.total_price, class: 'price order-total-price' %}
+                  </div>
+                </div>
+
+                <div class="item">
+                  <div class="label font-size-13 text-light">
+                    {{ 'customer.order.payment_status' | t }}
+                  </div>
+                  <div class="value font-size-15">
+                    {{ order.financial_status_label }}
+                  </div>
+                </div>
+
+                <div class="item">
+                  <div class="label font-size-13 text-light">
+                    {{ 'customer.order.fulfillment_status' | t }}
+                  </div>
+                  <div class="value font-size-15">
+                    {{ order.fulfillment_status_label }}
+                  </div>
+                </div>
+
+              </div>
+
+            </div>
+
+            <div class="actions columns large-3 text-right-large">
+
+              {% render 'separator', class: 'hide-for-large' %}
+
+              <a class="button small" href="{{ order.customer_url }}">{{ 'customer.orders.view' | t }}</a></td>
+
+              <a class="button small" href="{{ routes.cart_url | append: '/' | append: reorder_url }}">{{ 'customer.orders.reorder' | t }}</a>
+
+            </div>
+
+          </div>
+
+          {% unless forloop.last %}
+            {% render 'separator', class: 'lined full margin-top margin-bottom' %}
+          {% endunless %}
+
+        {% endfor %}
+      </div>
+
+      {% render 'pagination', paginate: paginate %}
+
+      {% endpaginate %}
+    {% else %}
+      <p>{{ 'customer.orders.none' | t }}</p>
+    {% endif %}
+  </div>
+
+{% render 'content-close', sidebar: sidebar %}

@@ -1,0 +1,14 @@
+{% assign separator_class = '' %}
+
+{% assign separator_class = separator_class | append: ' ' | append: block.settings.margin_top %}
+{% assign separator_class = separator_class | append: ' ' | append: block.settings.margin_bottom %}
+
+{% if block.settings.show_line %}
+  {% assign separator_class = separator_class | append: ' lined' %}
+{% endif %}
+
+<h1 class="visually-hidden">{{ 'general.accessibility.separator' | t }}</h1>
+
+<div class="separator {{ separator_class }} {{ block.settings.width }}" style="border-bottom-color: {{ block.settings.line_color }}; border-bottom-width: {{ block.settings.line_thickness }}px"></div>
+
+{% assign separator_class = nil %}

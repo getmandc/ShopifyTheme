@@ -1,0 +1,73 @@
+{% assign collection_list_exclude = '' %}
+
+{% render 'content-open', class: 'column-max' %}
+
+  {% render 'page-header' %}
+
+  {% render 'separator' %}
+
+  {% assign excluded_collections = collection_list_exclude | replace: ' ', '' | split: ',' %}
+
+  {%- paginate collections by 12 -%}
+    <div class="small-item-grid-2 medium-item-grid-3 large-item-grid-4">
+      {% for collection in collections %}
+        {% unless excluded_collections contains collection.handle %}
+
+          {% if collection.image %}
+            {% assign collection_image = collection.image %}
+            {% assign collection_alt = collection.image.alt %}
+          {% else %}
+            {% assign collection_image = collection.products.first.featured_media.preview_image %}
+            {% assign collection_alt = collection.title %}
+          {% endif %}
+
+          <div class="collection-grid-item item">
+            {% render 'image', image: collection_image, image_type: 'collection', image_link_url: collection.url, image_alt: collection_alt, image_ratio: section.settings.image_ratio %}
+
+            <div class="collection-details">
+
+              <div class="collection-title lht">
+                <a class="text-color" href="{{ collection.url }}">{{ collection.title }}</a>
+              </div>
+
+              <div class="collection-item-count text-light font-size-14">
+                {{ 'collections.collection_list.item_count' | t: count: collection.all_products_count }}
+              </div>
+            </div>
+          </div>
+
+        {% endunless %}
+      {% endfor %}
+    </div>
+    {% render 'pagination', paginate: paginate %}
+  {%- endpaginate -%}
+
+{% render 'content-close' %}
+
+{% schema %}
+{
+  "name": "t:sections.main-list-collections.name",
+  "settings": [
+    {
+      "id": "image_ratio",
+      "type": "select",
+      "label": "t:sections.main-list-collections.settings.image_ratio.label",
+      "options": [
+        {
+          "value": "adapt",
+          "label": "t:sections.main-list-collections.settings.image_ratio.option__1.label"
+        },
+        {
+          "value": "portrait",
+          "label": "t:sections.main-list-collections.settings.image_ratio.option__2.label"
+        },
+        {
+          "value": "square",
+          "label": "t:sections.main-list-collections.settings.image_ratio.option__3.label"
+        }
+      ],
+      "default": "adapt"
+    }
+  ]
+}
+{% endschema %}

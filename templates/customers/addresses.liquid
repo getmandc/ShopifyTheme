@@ -1,0 +1,74 @@
+<div class="column-max">
+  {% render 'breadcrumbs' %}
+</div>
+
+{% render 'content-open', class: 'column-max no-padding-top' %}
+
+  {% render 'page-header', class: 'text-center' %}
+
+  {% render 'separator' %}
+
+  <div class="new-address">
+
+    <div class="text-center">
+      <button type="button" class="button toggle-address" data-form-id="add_address">
+        {{ 'customer.addresses.add_new' | t }}
+      </button>
+    </div>
+
+    <div id="add_address" class="customer-address" style="display: none;">
+      {% form 'customer_address', customer.new_address %}
+        {% render 'customer-address-fields', form: form, id: 'new' %}
+      {% endform %}
+    </div>
+
+  </div>
+
+  {% if customer.addresses.size > 0 %}
+    {% render 'separator', class: 'lined margin-top-150 margin-bottom-150' %}
+  {% endif %}
+
+  <div class="customer-addresses">
+    {% paginate customer.addresses by 10 %}
+
+      {% for address in customer.addresses %}
+        <div id="address_{{ address.id }}" class="customer-address text-center">
+
+          {% if address == customer.default_address %}
+            <p class="margin-bottom-50"><strong>{{ 'customer.addresses.default' | t }}</strong></p>
+          {% endif %}
+
+          {{ address | format_address }}
+
+          <button type="button" class="button outlined small toggle-address" data-form-id="edit_address_{{ address.id }}">{{ 'customer.addresses.edit' | t }}</button>
+
+          <button type="button" class="button outlined small delete-address" data-form-id="{{ address.id }}" data-confirm-message="{{ 'customer.addresses.delete_confirm' | t }}">{{ 'customer.addresses.delete' | t }}</button>
+
+          <div id="edit_address_{{ address.id }}" style="display:none;">
+            {% form 'customer_address', address %}
+              {% render 'customer-address-fields', form: form, id: form.id %}
+            {% endform %}
+          </div>
+
+        </div>
+
+        {% unless forloop.last %}
+          {% render 'separator', class: 'lined margin-top-150 margin-bottom-150' %}
+        {% endunless %}
+
+      {% endfor %}
+
+      {% render 'pagination', paginate: paginate %}
+
+    {% endpaginate %}
+  </div>
+
+  {% render 'separator', class: 'lined margin-top-150 margin-bottom-150' %}
+
+  <div class="form-actions text-center no-margin-top width-100">
+    <p class="font-size-15 margin-bottom-50">
+      {{ 'customer.account.return' | t | link_to: routes.account_url }}
+    </p>
+  </div>
+
+{% render 'content-close' %}

@@ -1,0 +1,34 @@
+<div class="margin-bottom">
+  {{ block.settings.signup_message }}
+</div>
+
+{%- assign formId = 'Contact_' | append: section.id -%}
+{% form 'customer', id: formId, novalidate: 'novalidate' %}
+
+  {% render 'form-errors', form: form %}
+
+  {% if form.posted_successfully? %}
+    <div class="form-success panel green text-center font-size-14" tabindex="-1" data-form-status role="alert">
+      {{ 'newsletter.success_message' | t }}
+    </div>
+  {% else %}
+    <input type="hidden" name="contact[tags]" value="newsletter">
+    <div class="table">
+      <div class="cell">
+        <input type="email" name="contact[email]" value="{{ form.email }}" placeholder="{{ 'newsletter.email_field_placeholder' | t }}"
+        aria-label="{{ 'newsletter.email_field_placeholder' | t }}"
+        required
+        class="{% if form.errors %} error {% endif %}"
+        {% if form.errors %}
+            aria-invalid="true"
+            aria-describedby="{{ formId }}-email-error"
+            data-form-status
+        {% endif %}>
+      </div>
+      <div class="cell">
+        <button type="submit" class="button" aria-label="{{ 'general.accessibility.submit' | t }}">{{ 'newsletter.submit' | t }}</button>
+      </div>
+    </div>
+  {% endif %}
+
+{% endform %}

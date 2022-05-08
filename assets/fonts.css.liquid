@@ -1,0 +1,159 @@
+{% assign brand_font = settings.typo_brand_font %}
+{% assign brand_font_bold = brand_font | font_modify: 'weight', 'bolder' %}
+
+{% unless brand_font_bold %}
+  {% assign brand_font_bold = brand_font | font_modify: 'weight', 'bold' %}
+{% endunless %}
+
+{% assign brand_font_italic = brand_font | font_modify: 'style', 'italic' %}
+{% assign brand_font_bold_italic = brand_font_bold | font_modify: 'style', 'italic' %}
+
+{{ brand_font | font_face: font_display: 'swap'}}
+
+{% if brand_font_bold %}
+  {{ brand_font_bold | font_face: font_display: 'swap' }}
+{% endif %}
+
+{% if brand_font_italic %}
+  {{ brand_font_italic | font_face: font_display: 'swap' }}
+{% endif %}
+
+{% if brand_font_bold_italic %}
+  {{ brand_font_bold_italic | font_face: font_display: 'swap' }}
+{% endif %}
+
+#app-header #app-upper-header .shop-identity-tagline .name {
+  font-family: {{ brand_font.family }}, {{ brand_font.fallback_families }};
+  font-size: {{ settings.typo_brand_font_size }}px;
+  font-weight: {{ brand_font.weight }};
+  font-style: {{ brand_font.style }};
+}
+
+{% assign main_menu_font = settings.typo_main_menu_font %}
+{% assign main_menu_font_bold = main_menu_font | font_modify: 'weight', 'bolder' %}
+
+{% unless main_menu_font_bold %}
+  {% assign main_menu_font_bold = main_menu_font | font_modify: 'weight', 'bold' %}
+{% endunless %}
+
+{% assign main_menu_font_italic = main_menu_font | font_modify: 'style', 'italic' %}
+{% assign main_menu_font_bold_italic = main_menu_font_bold | font_modify: 'style', 'italic' %}
+
+{{ main_menu_font | font_face: font_display: 'swap' }}
+
+{% if main_menu_font_bold %}
+  {{ main_menu_font_bold | font_face: font_display: 'swap' }}
+{% endif %}
+
+{% if main_menu_font_italic %}
+  {{ main_menu_font_italic | font_face: font_display: 'swap' }}
+{% endif %}
+
+{% if main_menu_font_bold_italic %}
+  {{ main_menu_font_bold_italic | font_face: font_display: 'swap' }}
+{% endif %}
+
+#app-header #app-lower-header .menu {
+  font-family: {{ main_menu_font.family }}, {{ main_menu_font.fallback_families }};
+  font-size: {{ settings.typo_main_menu_font_size }}px;
+  font-weight: {{ main_menu_font.weight }};
+  font-style: {{ main_menu_font.style }};
+}
+
+#app-header #app-lower-header .menu ul.level-1 li.level-1 .submenu {
+  font-size: {{ settings.typo_main_menu_dropdown_font_size }}px;
+}
+
+#slide-side-menu .menu {
+  font-family: {{ main_menu_font.family }}, {{ main_menu_font.fallback_families }};
+}
+
+{% assign heading_font = settings.typo_heading_font %}
+{% assign heading_font_bold = heading_font | font_modify: 'weight', 'bolder' %}
+
+{% unless heading_font_bold %}
+  {% assign heading_font_bold = heading_font | font_modify: 'weight', 'bold' %}
+{% endunless %}
+
+{% assign heading_font_italic = heading_font | font_modify: 'style', 'italic' %}
+{% assign heading_font_bold_italic = heading_font_bold | font_modify: 'style', 'italic' %}
+
+{{ heading_font | font_face: font_display: 'swap' }}
+
+{% if heading_font_bold %}
+  {{ heading_font_bold | font_face: font_display: 'swap' }}
+{% endif %}
+
+{% if heading_font_italic %}
+  {{ heading_font_italic | font_face: font_display: 'swap' }}
+{% endif %}
+
+{% if heading_font_bold_italic %}
+  {{ heading_font_bold_italic | font_face: font_display: 'swap' }}
+{% endif %}
+
+h1, h2, h3, h4, h5, h6, .heading {
+  font-family: {{ heading_font.family }}, {{ heading_font.fallback_families }};
+  font-weight: {{ heading_font.weight }};
+  font-style: {{ heading_font.style }};
+}
+
+{% assign primary_font = settings.typo_primary_font %}
+{% assign primary_font_bold = primary_font | font_modify: 'weight', 'bolder' %}
+
+{% unless primary_font_bold %}
+  {% assign primary_font_bold = primary_font | font_modify: 'weight', 'bold' %}
+{% endunless %}
+
+{% assign primary_font_italic = primary_font | font_modify: 'style', 'italic' %}
+{% assign primary_font_bold_italic = primary_font_bold | font_modify: 'style', 'italic' %}
+
+{{ primary_font | font_face: font_display: 'swap' }}
+
+{% if primary_font_bold %}
+  {{ primary_font_bold | font_face: font_display: 'swap' }}
+{% endif %}
+
+{% if primary_font_italic %}
+  {{ primary_font_italic | font_face: font_display: 'swap'}}
+{% endif %}
+
+{% if primary_font_bold_italic %}
+  {{ primary_font_bold_italic | font_face: font_display: 'swap' }}
+{% endif %}
+
+body, #app-body {
+  font-family: {{ primary_font.family }}, {{ primary_font.fallback_families }};
+  font-size: {{ settings.typo_primary_font_size }}px;
+  font-weight: {{ primary_font.weight }};
+  font-style: {{ primary_font.style }};
+}
+
+#announcement-bar, #top-bar {
+  font-family: {{ primary_font.family }}, {{ primary_font.fallback_families }};
+  font-weight: {{ primary_font.weight }};
+  font-style: {{ primary_font.style }};
+}
+
+input[type="email"],
+input[type="number"],
+input[type="password"],
+input[type="search"],
+input[type="tel"],
+input[type="file"],
+input[type="text"],
+input[type="url"],
+input[type="color"],
+input[type="date"],
+input[type="datetime"],
+input[type="datetime-local"],
+input[type="month"],
+input[type="time"],
+input[type="week"],
+select,
+select[multiple="multiple"],
+textarea {
+  font-family: {{ primary_font.family }}, {{ primary_font.fallback_families }};
+  font-weight: {{ primary_font.weight }};
+  font-style: {{ primary_font.style }};
+}

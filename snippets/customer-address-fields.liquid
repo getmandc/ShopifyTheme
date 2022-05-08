@@ -1,0 +1,86 @@
+<div class="customer-address-fields column-extra-narrow margin-top margin-bottom text-left">
+  
+  {% render 'form-errors', form: form %}
+
+  <div class="row">
+
+    <div class="columns medium-6">
+      <label for="address-first-name-{{ id }}">{{ 'customer.addresses.first_name' | t }}</label>
+      <input type="text" id="address-first-name-{{ id }}" name="address[first_name]" value="{{ form.first_name }}">
+    </div>
+
+    <div class="columns medium-6">
+      <label for="address-last-name-{{ id }}">{{ 'customer.addresses.last_name' | t }}</label>
+      <input type="text" id="address-last-name-{{ id }}" name="address[last_name]" value="{{ form.last_name }}">
+    </div>
+
+  </div>
+
+  <div class="row">
+    <label for="address-company-{{ id }}">{{ 'customer.addresses.company' | t }}</label>
+    <input type="text" id="address-company-{{ id }}" name="address[company]" value="{{ form.company }}">
+  </div>
+
+  <div class="row">
+    <label for="address-address1-{{ id }}">{{ 'customer.addresses.address1' | t }}</label>
+    <input type="text" id="address-address1-{{ id }}" name="address[address1]" value="{{ form.address1 }}">
+  </div>
+
+  <div class="row">
+    <label for="address-address2-{{ id }}">{{ 'customer.addresses.address2' | t }}</label>
+    <input type="text" id="address-address2-{{ id }}" name="address[address2]" value="{{ form.address2 }}">
+  </div>
+
+  <div class="row">
+    <label for="address_country_{{ id }}">{{ 'customer.addresses.country' | t }}</label>
+    <select id="address_country_{{ id }}" name="address[country]" data-default="{{ form.country }}">{{ country_option_tags }}</select>
+  </div>
+
+  <div id="address_province_row_{{ id }}" class="row">
+    <label for="address_province_{{ id }}">{{ 'customer.addresses.province' | t }}</label>
+    <select id="address_province_{{ id }}" name="address[province]" data-default="{{ form.province }}"></select>
+  </div>
+
+  <div class="row">
+
+    <div class="columns medium-6">
+      <label for="address-city-{{ id }}">{{ 'customer.addresses.city' | t }}</label>
+      <input type="text" id="address-city-{{ id }}" name="address[city]" value="{{ form.city }}">
+    </div>
+
+    <div class="columns medium-6">
+      <label for="address-zip-{{ id }}">{{ 'customer.addresses.zip' | t }}</label>
+      <input type="text" id="address-zip-{{ id }}" name="address[zip]" value="{{ form.zip }}">
+    </div>
+
+  </div>
+
+  <div class="row">
+    <label for="addres-phone-{{ id }}">{{ 'customer.addresses.phone' | t }}</label>
+    <input type="text" id="address-phone-{{ id }}" name="address[phone]" value="{{ form.phone }}">
+  </div>
+
+  <div class="row">
+    {{ form.set_as_default_checkbox }}
+    <label for="address_default_address_{{ id }}" class="set-as-default">{{ 'customer.addresses.set_as_default' | t }}</label>
+  </div>
+
+  <div class="form-actions text-center width-100">
+
+    {% if id == 'new' %}
+      {% assign submit_text = 'customer.addresses.add' | t %}
+      {% assign form_id = 'add_address' %}
+    {% else %}
+      {% assign submit_text = 'customer.addresses.update_address' | t %}
+      {% assign form_id = 'edit_address_' | append: id %}
+    {% endif %}
+
+    <input class="button" type="submit" value="{{ submit_text }}" />
+
+    <div class="margin-top-50">
+      <a href="#" class="toggle-address" data-form-id="{{ form_id }}">{{ 'customer.addresses.cancel' | t }}</a>
+    </div>
+
+  </div>
+
+</div>

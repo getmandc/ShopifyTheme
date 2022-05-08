@@ -1,0 +1,9 @@
+{% assign product = all_products[block.settings.product] %}
+
+{% if product != empty %}
+  {% render 'product', product: product, location: 'secondary', product_class: 'item collection-product', show_add_to_cart_button: block.settings.show_add_to_cart_button, show_compare_at_price: block.settings.show_compare_at_price, show_from: block.settings.show_from, show_price: block.settings.show_price, show_sale_sticker: block.settings.show_sale_sticker, show_variant_selector: block.settings.show_variant_selector, show_vendor: block.settings.show_vendor %}
+{% else %}
+  <div class="no-content">
+    <p class="no-margin">{{ 'onboarding.select_product' | t }}</p>
+  </div>
+{% endif %}

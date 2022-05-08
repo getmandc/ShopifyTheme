@@ -1,0 +1,154 @@
+{% assign theme_name = 'Providence' %}
+{% assign theme_version = '5.11.10' %}
+{% assign product_enable_deep_linking = true %}
+{% assign product_enable_highlight_add_when_sale = true %}
+{% assign product_enable_lightbox = true %}
+{% assign product_enable_qty_limit = false %}
+{% assign product_enable_select_an_option = false %}
+{% assign product_enable_set_variant_from_secondary = true %}
+{% assign product_primary_image_size = '1024x1024' %}
+{% assign product_secondary_image_size = '180x' %}
+{% assign product_lightbox_image_size = 'master' %}
+{% assign product_show_product_image_first = false %}
+
+{% if settings.search_unavailable_products %}
+  {% assign show_unavailable_products = 'show' %}
+{% else %}
+  {% assign show_unavailable_products = 'hide' %}
+{% endif %}
+
+{% if shop.customer_accounts_enabled and customer %}
+  {% assign customer_logged_in = true %}
+{% else %}
+  {% assign customer_logged_in = false %}
+{% endif %}
+
+{% assign template_type = template %}
+
+{% if template contains '.' %}
+  {% assign template_parts = template | split: '.' %}
+  {% assign template_type = template_parts[0] %}
+{% endif %}
+
+<script>
+  window.Station || (window.Station = {
+    App: {
+      config: {
+        mediumScreen: 640,
+        largeScreen: 1024
+      }
+    },
+    Theme: {
+      givenName: {{ theme.name | json }},
+      id: {{ theme.id | json }},
+      name: {{ theme_name | json }},
+      version: {{ theme_version | json }},
+      config: {
+        search: {
+          enableSuggestions: {{ settings.search_enable_suggestions | json }},
+          showVendor: {{ settings.search_show_vendor | json }},
+          showPrice: {{ settings.search_show_price | json }},
+          showUnavailableProducts: {{ show_unavailable_products | json }},
+          enterKeySubmit: {{ settings.search_enter_submit | json }}
+        },
+        product: {
+          enableDeepLinking: {{ product_enable_deep_linking | json }},
+          enableHighlightAddWhenSale: {{ product_enable_highlight_add_when_sale | json }},
+          enableLightbox: {{ product_enable_lightbox | json }},
+          enableQtyLimit: {{ product_enable_qty_limit | json }},
+          enableSelectAnOption: {{ product_enable_select_an_option | json }},
+          enableSetVariantFromSecondary: {{ product_enable_set_variant_from_secondary | json }},
+          lightboxImageSize: {{ product_lightbox_image_size | json }},
+          primaryImageSize: {{ product_primary_image_size | json }},
+          showPrimaryImageFirst: {{ product_show_product_image_first }}
+        },
+        mediaQuery: {
+          mediumUp: 'screen and (min-width: 768px)',
+          small: 'screen and (max-width: 767px)',
+        }
+      },
+      current: {
+        article: {{ article | json }},
+        cart: {{ cart | json }},
+        collection: {{ collection | json }},
+        featured_media_id: {{ product.featured_media.id | json }},
+        featuredImageID: {{ product.featured_image.id | json }},
+        product: {{ product | json }},
+        template: {{ template | json }},
+        templateType: {{ template_type | json }},
+        variant: {{ product.selected_or_first_available_variant | json }},
+        players: {
+          youtube: {},
+          vimeo: {}
+        }
+      },
+      customerLoggedIn: {{ customer_logged_in  | json }},
+      shop: {
+        collectionsCount: {{ shop.collections_count }},
+        currency: {{ shop.currency | json }},
+        domain: {{ shop.domain | json }},
+        locale: {{ shop.locale | json }},
+        moneyFormat: {{ shop.money_format | json }},
+        moneyWithCurrencyFormat: {{ shop.money_with_currency_format | json }},
+        name: {{ shop.name | json }},
+        productsCount: {{ shop.products_count }},
+        url: {{ shop.url | json }},
+        {% capture root %}{{ routes.root_url }}{% if routes.root_url != '/' %}/{% endif %}{% endcapture %}
+        root: {{ root | json }}
+      },
+      i18n: {
+        search: {
+          suggestions: {
+            products: {{ 'general.search.suggestions.products' | t | json }},
+            collections: {{ 'general.search.suggestions.collections' | t | json }},
+            pages: {{ 'general.search.suggestions.pages' | t | json }},
+            articles: {{ 'general.search.suggestions.articles' | t | json }},
+          },
+          results: {
+            show: {{ 'general.search.results.show' | t | json }},
+            none: {{ 'general.search.results.none' | t | json }}
+          }
+        },
+        cart: {
+          itemCount: {
+            zero: {{ 'cart.item_count.zero' | t | json }},
+            one: {{ 'cart.item_count.one' | t | json }},
+            other: {{ 'cart.item_count.other' | t | json }}
+          },
+          notification: {
+            productAdded: {{ 'cart.notification.product_added' | t | json }},
+            viewCartLink: {{ 'cart.notification.view_cart_link' | t | json }}
+          }
+        },
+        map: {
+          errors: {
+            addressError: {{ 'map.errors.address_error' | t | json }},
+            addressNoResults: {{ 'map.errors.address_no_results' | t | json }},
+            addressQueryLimitHTML: {{ 'map.errors.address_query_limit_html' | t | json }},
+            authErrorHTML: {{ 'map.errors.auth_error_html' | t | json }}
+          }
+        },
+        product: {
+          addToCart: {{ 'products.add_to_cart' | t | json }},
+          soldOut: {{ 'products.sold_out' | t | json }},
+          unavailable: {{ 'products.unavailable' | t | json }},
+          onSale: {{ 'products.on_sale_sticker' | t | json }},
+          regularPrice: {{ 'products.regular_price' | t | json }},
+          unitPrice: {{ 'products.per' | t | json }},
+          unitPriceSeparator: {{ 'general.accessibility.unit_price_separator' | t | json }}
+        },
+        a11y: {
+          close: {{ 'general.accessibility.close_modal' | t | json }}
+        }
+      }
+    }
+  });
+  window.Station.Theme.current.inventory || (window.Station.Theme.current.inventory = {
+    {%- for variant in product.variants -%}
+      {{ variant.id | json }}: {
+        policy: {{ variant.inventory_policy | json }},
+        quantity: {{ variant.inventory_quantity | json }}
+      }{% unless forloop.last %},{% endunless %}
+    {%- endfor -%}
+  });
+</script>

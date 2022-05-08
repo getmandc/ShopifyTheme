@@ -1,0 +1,45 @@
+<meta charset="utf-8">
+<meta http-equiv="X-UA-Compatible" content="IE=edge,chrome=1">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+
+<link rel="canonical" href="{{ canonical_url }}">
+
+{% if settings.favicon != blank %}
+  <link rel="shortcut icon" href="{{ settings.favicon | img_url: '32x32' }}" type="image/png">
+{% endif %}
+
+{% unless seo_title %}
+  {% if template_type == 'password' %}
+    {% assign seo_title = 'password_page.general.seo_title' | t: shop_name: shop.name %}
+  {% elsif template_type == 'index' %}
+    {% assign seo_title = page_title %}
+  {% else %}
+    {% assign seo_title = page_title %}
+  {% endif %}
+{% endunless %}
+
+{% if current_tags %}
+  {% assign meta_tags = current_tags | join: ', ' %}
+  {% assign meta_tags = 'general.meta.tags_html' | t: tags: meta_tags %}
+  {% assign seo_title = seo_title | append: ' - ' %}
+  {% assign seo_title = seo_title | append: meta_tags %}
+{% endif %}
+
+{% if current_page != 1 %}
+  {% assign meta_current_page = 'general.meta.page_html' | t: page: current_page %}
+  {% assign seo_title = seo_title | append: ' - ' %}
+  {% assign seo_title = seo_title | append: meta_current_page %}
+{% endif %}
+
+{% assign seo_title = seo_title | append: ' | ' %}
+{% assign seo_title = seo_title | append: shop.name %}
+
+<title>{{ seo_title }}</title>
+
+{% if seo_description %}
+  {% assign page_description = seo_description %}
+{% endif %}
+
+{% if page_description %}
+  <meta name="description" content="{{ page_description | escape }}">
+{% endif %}

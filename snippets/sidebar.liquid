@@ -1,0 +1,18 @@
+<section class="{{ class }}">
+
+  <h1 class="visually-hidden">{{ 'general.accessibility.sidebar' | t }}</h1>
+
+  {% render 'separator', class: 'lined full margin-top-150 margin-bottom-150 show-for-small' %}
+
+  {% case sidebar %}
+    {% when 'sidebar-customers-account' %}
+      {% render 'sidebar-customers-account' %}
+    {% when 'sidebar-customers-order' %}
+      {% render 'sidebar-customers-order' %}
+    {% else %}
+      {% section 'sidebar' %}
+  {% endcase %}
+
+</section>
+
+{% assign class = nil %}

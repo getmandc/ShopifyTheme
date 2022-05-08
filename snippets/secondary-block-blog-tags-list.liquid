@@ -1,0 +1,20 @@
+{% assign blog = blogs[block.settings.blog] %}
+{% assign excluded_tags = block.settings.exclude_tags | escape | replace: ' ', '' | split: ',' %}
+
+{% if blog != empty %}
+  <nav class="nav-side triangle-indicators" data-close-kin="false" data-expanded="false" data-node-transition-duration="300">
+    <ul class="side-nav">
+      {% for tag in blog.tags %}
+        {% unless excluded_tags contains tag %}
+          <li class="{{ tag | handleize }}{% if current_tags contains tag %} active{% endif %}">
+            <a href="/blogs/{{ blog.handle }}/tagged/{{ tag | handle }}">{{ tag }}</a>
+          </li>
+        {% endunless %}
+      {% endfor %}
+    </ul>
+  </nav>
+{% else %}
+  <div class="no-content">
+    <p class="no-margin">{{ 'onboarding.select_blog' | t }}</p>
+  </div>
+{% endif %}

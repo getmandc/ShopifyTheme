@@ -1,0 +1,237 @@
+{% assign date_format = '%B %d, %Y' %}
+{% assign date_time_format = '%B %d, %Y %I:%M %p %Z' %}
+{% assign time_format = '%I:%M %p %Z' %}
+
+{% assign sidebar = 'sidebar-customers-order' %}
+
+{% assign title = 'customer.order.title' | t: name: order.name %}
+
+<div class="column-max">
+  {% render 'breadcrumbs' %}
+</div>
+
+{% render 'content-open', class: 'column-max no-padding-top', sidebar: sidebar %}
+
+  {% render 'page-header', class: 'row', col1_class: 'columns large-8', col2_class: 'columns large-4 text-right-large', content: 'customer-order' %}
+
+  {% render 'separator' %}
+
+  {% assign order_date = nil %}
+  {% assign cancelled_date = order.cancelled_at | date: date_time_format %}
+
+  <div class="customer-order">
+
+    <div class="order-meta small-item-grid-1 medium-item-grid-2 large-item-grid-3 lht">
+
+      <div class="item">
+        <strong class="title">{{ 'customer.order.placed' | t }}</strong>
+        <div>{{ order.created_at | date: date_format }}</div>
+        <div>{{ order.created_at | date: time_format }}</div>
+      </div>
+
+      <div class="item">
+        <strong class="title">{{ 'customer.order.payment_status' | t }}</strong>
+        {{ order.financial_status_label }}
+      </div>
+
+      <div class="item">
+        <strong class="title">{{ 'customer.order.fulfillment_status' | t }}</strong>
+        {{ order.fulfillment_status_label }}
+      </div>
+
+      {% if order.cancelled %}
+        <div class="item">
+          <strong class="title">{{ 'customer.order.cancelled' | t }}</strong>
+          <div>{{ order.cancelled_at | date: date_format }}</div>
+          <div>{{ order.cancelled_at | date: time_format }}</div>
+        </div>
+      {% endif %}
+
+      {% if order.cancel_reason %}
+        <div class="item">
+          <strong class="title">{{ 'customer.order.cancellation_reason' | t }}</strong>
+          {{ order.cancel_reason }}
+        </div>
+      {% endif %}
+
+      {% if order.note and order.note != blank %}
+        <div class="item">
+          <strong class="title">{{ 'customer.order.notes' | t }}</strong>
+          {{ order.note }}
+        </div>
+      {% endif %}
+
+    </div>
+
+    {% render 'separator', class: 'lined full margin-top-150 margin-bottom' %}
+
+    <div class="line-items font-size-15">
+      {% for line_item in order.line_items %}
+
+        {% if line_item.line_level_discount_allocations.size > 0 %}
+          {% assign original_price_class = 'price compare-at text-light' %}
+        {% else %}
+          {% assign original_price_class = 'price' %}
+        {% endif %}
+
+        {% assign property_size = line_item.properties | size %}
+
+        <div id="{{ line_item.key }}" class="line-item">
+          <div class="row">
+
+            <div class="image columns small-12 medium-2 large-2 text-center">
+              {% render 'image', image: line_item.image, image_widths: '100, 250, 650', image_link_url: line_item.variant.url %}
+            </div>
+
+            <div class="columns small-7 medium-6 large-7">
+
+              <div class="product-title font-size-17">
+                <a class="text-color" href="{{ item.url | within: collections.all }}">{{ line_item.product.title }}</a>
+              </div>
+
+              {% if line_item.sku != empty %}
+                <div class="sku font-size-15 spacing-top">
+                  <span class="sku-label">{{ 'customer.order.sku' | t }}</span> <span data-sku>{{ line_item.sku }}</span>
+                </div>
+              {% endif %}
+
+              {% unless line_item.variant.title contains 'Default' %}
+                <div class="variant-title font-size-15 spacing-top">{{ line_item.variant.title }}</div>
+              {% endunless %}
+
+              {% unless line_item.selling_plan_allocation == nil  %}
+                <div class="font-size-15 spacing-top">
+                  {{ line_item.selling_plan_allocation.selling_plan.name }}
+                </div>
+              {% endunless %}
+
+              {% if property_size > 0 %}
+                <div class="properties font-size-15 spacing-top">
+                  {% for p in line_item.properties %}
+                    {% unless p.last == blank %}
+                      <span class="property">
+                        <span class="property-title">{{ p.first }}:</span>
+                        {% if p.last contains '/uploads/' %}
+                          <a href="{{ p.last }}" data-target-new>{{ 'general.forms.file' | t }}</a>
+                        {% else %}
+                          {{ p.last }}
+                        {% endif %}
+                      </span>
+                    {% endunless %}
+                  {% endfor %}
+                </div>
+              {% endif %}
+
+              {% if line_item.line_level_discount_allocations.size > 0 %}
+                <div class="discounts text-light font-size-13 spacing-top">
+                  {% for allocation in line_item.line_level_discount_allocations %}
+                    <div class="discount">
+                      {% render 'icon-tag' %}
+                      {{ allocation.discount_application.title }} (-{% render 'price', amount: allocation.discount_application.total_allocated_amount %})</div>
+                  {% endfor %}
+                </div>
+              {% endif %}
+
+              {% if line_item.fulfillment %}
+                {% render 'separator', class: 'lined no-margin-left' %}
+                <div class="fulfillment">
+                  {%- assign fulfilled_at = line_item.fulfillment.created_at | date: date_format -%}
+                  <span>{{ 'customer.order.fulfilled_at' | t: date: fulfilled_at }}</span></br>
+                  {% if line_item.fulfillment.tracking_number %}
+                    <a href="{{ line_item.fulfillment.tracking_url }}" data-target-new>{{ line_item.fulfillment.tracking_company }} #{{ line_item.fulfillment.tracking_number}}</a>
+                  {% endif %}
+                </div>
+              {% endif %}
+
+            </div>
+
+            <div class="pricing columns small-5 medium-4 large-3 text-right">
+
+              <span class="line-price-calc font-size-13">
+                {{ line_item.quantity }} x <span>{% render 'price', amount: line_item.original_price, class: 'price item-price' %}</span>
+              </span>
+
+              {% render 'price', amount: line_item.original_line_price, class: original_price_class %}
+
+              {% if line_item.line_level_discount_allocations.size > 0 %}
+                {% render 'price', amount: line_item.final_line_price, class: 'price' %}
+              {% endif %}
+
+              {% if line_item.unit_price_measurement %}
+                {% capture unit_price_separator %}<span class="price per-unit text-light font-size-12" aria-hidden="true">&sol;</span><span class="visually-hidden">{{ 'products.per' | t }}</span>{% endcapture %}
+                {% capture unit_price_base_unit %}<span class="price per-unit text-light font-size-12">{% if line_item.unit_price_measurement.reference_value != 1 %}{{ line_item.unit_price_measurement.reference_value }}{% endif %}{{ line_item.unit_price_measurement.reference_unit }}</span>{% endcapture %}<br/><span class="price per-unit text-light font-size-12" data-price data-base-price="{{ line_item.unit_price }}" {{ ms }}>{{ line_item.unit_price | money_with_currency_format }}</span>{{ unit_price_separator }}{{ unit_price_base_unit }}
+              {% endif %}
+
+            </div>
+          </div>
+        </div>
+
+        {% render 'separator', class: 'lined full margin-top margin-bottom' %}
+
+      {% endfor %}
+    </div>
+
+    {% render 'separator' %}
+
+    <div class="order-totals lht">
+
+      <div class="subtotal row text-center text-right-medium">
+        <div class="columns medium-6 large-8 label">
+          {{ 'customer.order.subtotal' | t }}
+        </div>
+        <div class="columns medium-6 large-4 amount">
+          {% render 'price', amount: order.line_items_subtotal_price, class: 'price order-subtotal' %}
+        </div>
+      </div>
+
+      {% if order.cart_level_discount_applications.size > 0 %}
+        {% for discount_application in order.cart_level_discount_applications %}
+          <div class="discount row text-center text-right-medium">
+            <div class="label columns medium-6 large-8">
+              <span class="discounts-title">{{ 'customer.order.discount' | t }}</span> ({{ discount_application.title }})
+            </div>
+            <div class="amount columns medium-6 large-4">
+              -{% render 'price', amount: discount_application.total_allocated_amount %}
+            </div>
+          </div>
+        {% endfor %}
+      {% endif %}
+
+      {% for shipping_method in order.shipping_methods %}
+        <div class="discount row text-center text-right-medium">
+          <div class="label columns medium-6 large-8">
+            {{ 'customer.order.shipping' | t: shipping_method: shipping_method.title }}
+          </div>
+          <div class="amount columns medium-6 large-4">
+            {% render 'price', amount: shipping_method.price, class: 'price order-discount' %}
+          </div>
+        </div>
+      {% endfor %}
+
+      {% for tax_line in order.tax_lines %}
+        {%- assign tax_rate = tax_line.rate | times: 100 -%}
+        <div class="tax row text-center text-right-medium">
+          <div class="label columns medium-6 large-8">
+            {{ 'customer.order.tax' | t: tax_title: tax_line.title, tax_rate: tax_rate }}
+          </div>
+          <div class="amount columns medium-6 large-4">
+            {% render 'price', amount: tax_line.price, class: 'price order-tax' %}
+          </div>
+        </div>
+      {% endfor %}
+
+      <div class="total row text-center text-right-medium">
+        <div class="label columns medium-6 large-8">
+          <strong class="font-size-17">{{ 'customer.order.total' | t }}</strong>
+        </div>
+        <div class="amount columns medium-6 large-4">
+          {{ order.currency }}
+          <strong class="font-size-17">{% render 'price', amount: order.total_price, class: 'price order-total' %}</strong>
+        </div>
+      </div>
+
+    </div>
+
+  </div>
+
+{% render 'content-close', sidebar: sidebar %}

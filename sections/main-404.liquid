@@ -1,0 +1,15 @@
+{% render 'content-open', class: 'column-narrow padding-top-300 padding-bottom-300' %}
+
+  <div class="text-center">
+
+    {% render 'page-header' %}
+
+    {% render 'separator', class: 'lined margin-top margin-bottom' %}
+
+    <div class="no-spacing-bottom-last">
+      {{ 'general.404.message_html' | t }}
+    </div>
+
+  </div>
+
+{% render 'content-close' %}

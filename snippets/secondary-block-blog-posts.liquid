@@ -1,0 +1,49 @@
+{% assign blog = blogs[block.settings.blog] %}
+
+{% if blog != empty %}
+  <div class="blog-articles">
+    {% assign show_tags = section.settings.show_tags %}
+    {% for article in blog.articles limit: block.settings.article_limit %}
+      {% if article.tags.size < 1 %}
+        {% assign show_tags = false %}
+      {% endif %}
+      {% unless forloop.first %}
+        {% render 'separator', class: 'margin-top-50 margin-bottom-50' %}
+      {% endunless %}
+      <article class="blog-article">
+        {% if block.settings.show_image and article.image %}
+          <div class="image-frame">
+            {% render 'image', image: article.image, image_link_url: article.url %}
+          </div>
+          {% render 'separator', class: 'no-margin-top' %}
+        {% endif %}
+        <header>
+          <h3 class="title no-margin">
+            {{ article.title | link_to: article.url }}
+          </h3>
+        </header>
+        {% if block.settings.show_publish_date or block.settings.show_author or block.settings.show_comment_count %}
+          {% render 'separator', class: 'margin-top-25 no-margin-bottom' %}
+          {% render 'article-meta', class: 'text-left text-light font-size-13 lht', blog: blog, article: article, show_publish_date: block.settings.show_publish_date, show_author: block.settings.show_author, show_comment_count: block.settings.show_comment_count %}
+          {% render 'separator', class: 'no-margin-top margin-bottom-50' %}
+        {% else %}
+          {% render 'separator', class: 'no-margin-top margin-bottom-25' %}
+        {% endif %}
+        <div class="body">
+          {{ article.excerpt_or_content }}
+        </div>
+        {% if block.settings.show_article_link %}
+          {% render 'separator', class: 'lined margin-top margin-bottom' %}
+          <p class="article-link no-margin text-center">
+            <a href="{{ article.url }}">{{ 'blog.article_list.go_to_article' | t }}</a>
+          </p>
+        {% endif %}
+        {% render 'json-ld-article', blog: blog, article: article %}
+      </article>
+    {% endfor %}
+  </div>
+{% else %}
+  <div class="no-content">
+    <p class="no-margin">{{ 'onboarding.select_blog' | t }}</p>
+  </div>
+{% endif %}

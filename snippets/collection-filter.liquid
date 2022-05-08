@@ -1,0 +1,30 @@
+<div class="filter-collection inline-block">
+  <select class="jump-menu" name="filter-collection-by-tag" id="filter-collection-by-tag">
+    {% if current_tags %}
+      {% if collection.handle %}
+        <option value="{{ routes.root_url }}{% if routes.root_url != '/' %}/{% endif %}collections/{{ collection.handle }}">{{ 'collections.filter.all_products' | t }}</option>
+      {% elsif collection.current_type %}
+        <option value="{{ collection.current_type | url_for_type }}">{{ 'collections.filter.all_products' | t }}</option>
+      {% elsif collection.current_vendor %}
+        <option value="{{ collection.current_vendor | url_for_vendor }}">{{ 'collections.filter.all_products' | t }}</option>
+      {% endif %}
+    {% else %}
+      {% if current_tags contains tag %}
+        <option value="">{{ 'collections.filter.all_products' | t }}</option>
+      {% else %}
+        <option value="">{{ 'collections.filter.filter' | t }}</option>
+      {% endif %}
+    {% endif %}
+    {% if collection.handle == 'all' and collections.all.tags.size > 0 %}
+      {% for tag in collections.all.tags %}
+        <option value="{{ routes.root_url }}{% if routes.root_url != '/' %}/{% endif %}collections/all/{{ tag | handleize }}"{% if current_tags contains tag %} selected="selected"{% endif %}>{{ tag }}</option>
+      {% endfor %}
+    {% elsif collection.tags.size > 0 %}
+      {% for tag in collection.tags %}
+        <option value="{{ routes.root_url }}{% if routes.root_url != '/' %}/{% endif %}collections/{{ collection.handle }}/{{ tag | handleize }}"{% if current_tags contains tag %} selected="selected"{% endif %}>{{ tag }}</option>
+      {% endfor %}
+    {% else %}
+      <option value="">{{ 'collections.filter.all_products' | t }}</option>
+    {% endif %}
+  </select>
+</div>

@@ -1,0 +1,26 @@
+{% unless title %}
+  {% assign title = page_title %}
+{% endunless %}
+
+<header class="page-header {{ class }}">
+
+  <div class="{{ col1_class }}">
+    <h1 class="title" data-default-text="{{ title }}">{{ title }}</h1>
+  </div>
+
+  {% if content %}
+    <div class="{{ col2_class }}">
+      {% case content %}
+        {% when 'blog' %}
+          {% render 'page-header-content-blog', section: section %}
+        {% when 'collection' %}
+          {% render 'page-header-content-collection', section: section %}
+        {% when 'customer-order' %}
+          {% render 'page-header-content-customer-order' %}
+      {% endcase %}
+    </div>
+  {% endif %}
+
+</header>
+
+{% assign class = nil %}

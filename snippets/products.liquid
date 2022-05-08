@@ -1,0 +1,72 @@
+{% assign product_class = 'item collection-product' %}
+
+{% if section.settings.products_per_row %}
+  {% assign per_row_large = section.settings.products_per_row %}
+  {% assign per_row_medium = per_row_large | at_most: 3 %}
+  {% assign per_row_small = per_row_large | at_most: 2 %}
+{% else %}
+  {% assign per_row_large = 4 %}
+  {% assign per_row_medium = 3 %}
+  {% assign per_row_small = 2 %}
+{% endif %}
+
+<div class="collection-products">
+  <div class="loading-overlay" style="display:none;">
+    <div class="loading-overlay__spinner">
+        <svg class="spinner" xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24">
+        <circle class="opacity-25" cx="12" cy="12" r="10" stroke="currentColor" stroke-width="4"></circle>
+        <path class="opacity-75" fill="currentColor" d="M4 12a8 8 0 018-8V0C5.373 0 0 5.373 0 12h4zm2 5.291A7.962 7.962 0 014 12H0c0 3.042 1.135 5.824 3 7.938l3-2.647z"></path>
+      </svg>
+    </div>
+  </div>
+  <div class="small-item-grid-{{ per_row_small }} medium-item-grid-{{ per_row_medium }} large-item-grid-{{ per_row_large }} {{ class }}">
+    {% for product in products limit: product_limit %}
+      {% render 'product', section: section, collection: collection, product: product, product_class: product_class %}
+    {% else %}
+      {% assign compare_at_class = compare_at_class | append: 'price compare-at' | replace: ' hidden', '' %}
+      {% assign compare_at_price = 2999 %}
+      {% assign price = 1999 %}
+      {% assign show_from = section.settings.show_from %}
+      {% assign show_compare_at_price = section.settings.show_compare_at_price %}
+
+      {% for i in (1..product_limit) %}
+        <div class="{{ product_class }}">
+
+          <div class="image text-center">
+            <a href="#" class="hover-effect-opacity">
+              {% capture current %}{% cycle 1, 2, 3, 4, 5, 6 %}{% endcapture %}
+              {{ 'product-' | append: current | placeholder_svg_tag: 'placeholder-svg' }}
+            </a>
+          </div>
+
+          <div class="product-details">
+
+            <header>
+              <h3 class="title font-size-16">
+                <a href="#">{{ 'onboarding.product_title' | t }}</a>
+              </h3>
+            </header>
+
+            {% if section.settings.show_vendor %}
+              <div class="vendor text-light lht font-size-14">{{ 'onboarding.product_vendor' | t }}</div>
+            {% endif %}
+
+            {% if section.settings.show_price %}
+              {% render 'pricing', price: price, compare_at_price: compare_at_price, compare_at_class: compare_at_class, from_class: 'hidden', show_compare_at_price: show_compare_at_price %}
+            {% endif %}
+
+            {% if section.settings.show_add_to_cart_button %}
+              <div class="actions">
+                <a href="#" class="button disabled small">{{ 'products.add_to_cart' | t }}</a>
+              </div>
+            {% endif %}
+
+          </div>
+
+        </div>
+      {% endfor %}
+    {% endfor %}
+  </div>
+</div>
+
+{% assign class = nil %}

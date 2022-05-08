@@ -1,0 +1,307 @@
+{% render 'content-open', class: 'column-max' %}
+
+  {% render 'section-open', section: section, type: 'cart-template', class: 'column-screen' %}
+
+    {% if cart.item_count > 0 %}
+
+      {% render 'page-header', class: 'text-center' %}
+
+      {% render 'separator', class: 'lined margin-top margin-bottom' %}
+
+      <div data-section-id="{{ section.id }}" data-section-type="cart">
+
+        <form class="cart" action="{{ routes.cart_url }}" method="post">
+
+          {% if section.settings.show_checkout_buttons_top %}
+
+            <div class="row checkout text-center text-right-large">
+              <div class="columns small-12">
+                <div class="row">
+                  <div class="columns small-12 large-6 large-push-3">
+
+                    <div class="actions">
+                      <input type="submit" name="update" class="button secondary update" value="{{ 'cart.general.update' | t }}">
+                      <input type="submit" name="checkout" class="button checkout" value="{{ 'cart.general.checkout' | t }}">
+                    </div>
+
+                    {% if additional_checkout_buttons and section.settings.show_additional_checkout_buttons %}
+                      <div class="additional-checkout-buttons">
+                        {{ content_for_additional_checkout_buttons }}
+                      </div>
+                    {% endif %}
+
+                  </div>
+                </div>
+              </div>
+            </div>
+
+            {% render 'separator', class: 'margin-top margin-bottom' %}
+
+          {% endif %}
+
+          <div class="line-items" role="table" aria-label="{{ 'cart.label.cart_items' | t }}" aria-rowcount="{{ cart.items.size }}">
+            {% for item in cart.items %}
+
+              {% assign property_size = item.properties | size %}
+
+              {% if item.line_level_discount_allocations.size > 0 %}
+                {% assign original_price_class = 'price compare-at text-light' %}
+              {% else %}
+                {% assign original_price_class = 'price' %}
+              {% endif %}
+
+              <div class="line-item row" role="row" aria-rowindex="{{ forloop.index }}">
+
+                <div class="image columns small-3 medium-2 large-1 text-center" role="cell">
+                  {% render 'image', image: item.image, image_widths: '100, 250, 650', image_link_url: item.url, focusable: true %}
+                </div>
+
+                <div class="columns small-9 medium-10 large-11">
+                  <div class="row">
+
+                    <div class="meta columns small-12 medium-6 text-light" role="cell">
+
+                      <div class="product-title font-size-15">
+                        <a class="text-color" href="{{ item.url | within: collections.all }}">{{ item.product.title }}</a>
+                      </div>
+
+                      {% unless item.variant.title contains 'Default' %}
+                        <div class="variant-title font-size-13 spacing-top">{{ item.variant.title }}</div>
+                      {% endunless %}
+
+                      {% if property_size > 0 %}
+                        <div class="properties font-size-13 spacing-top">
+                          {% for p in item.properties %}
+                            {% unless p.last == blank %}
+                              <span class="property">
+                                <span class="property-title">{{ p.first }}:</span>
+                                {% if p.last contains '/uploads/' %}
+                                  <a href="{{ p.last }}" data-target-new>{{ 'general.forms.file' | t }}</a>
+                                {% else %}
+                                  {{ p.last }}
+                                {% endif %}
+                              </span>
+                            {% endunless %}
+                          {% endfor %}
+                        </div>
+                      {% endif %}
+
+                      {% if item.line_level_discount_allocations.size > 0 %}
+                        <div class="discounts text-light font-size-12 spacing-top">
+                          {% for allocation in item.line_level_discount_allocations %}
+                            <div class="discount">
+                              {% render 'icon-tag' %}
+                              {{ allocation.discount_application.title }} (-{% render 'price', amount: allocation.discount_application.total_allocated_amount %})</div>
+                          {% endfor %}
+                        </div>
+                      {% endif %}
+
+                      {% unless item.selling_plan_allocation == nil %}
+                        <div class="font-size-13 spacing-top">
+                          {{ item.selling_plan_allocation.selling_plan.name }}
+                        </div>
+                      {% endunless %}
+                    </div>
+
+                    <div class="columns small-12 medium-5 medium-push-1">
+                      <div class="row">
+
+                        <div class="qty columns small-12 large-6" role="cell">
+                          <div class="row">
+                            <div class="columns small-4 large-6 no-margin-bottom">
+                              <label class="hidden" for="updates_{{ item.key }}">{{ 'cart.label.quantity' | t }}</label>
+                              <input class="quantity text-center" type="number" name="updates[]" id="updates_{{ item.key }}" value="{{ item.quantity }}" min="0" pattern="[0-9]*">
+                            </div>
+                            <div class="columns small-4 no-margin-bottom hide-for-large">
+                              <button type="submit" name="update" class="button secondary">
+                                <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" width="20" height="20" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+                                  <polyline points="20 6 9 17 4 12"></polyline>
+                                </svg>
+                              </button>
+                            </div>
+                            <div class="columns small-4 large-6 no-margin-bottom">
+                              <a href="{{ routes.cart_change_url }}?line={{ forloop.index }}&amp;quantity=0" class="button secondary" aria-label="{{ 'cart.label.remove' | t: product: item.title }}" data-cart-remove>
+                                <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" width="20" height="20" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+                                  <line x1="18" y1="6" x2="6" y2="18"></line><line x1="6" y1="6" x2="18" y2="18"></line>
+                                </svg>
+                              </a>
+                            </div>
+                          </div>
+                        </div>
+
+                        <div class="pricing columns small-12 large-6 text-right" role="cell">
+
+                          <span class="line-price-calc font-size-12">
+                            {{ item.quantity }} x <span>{% render 'price', amount: item.original_price, class: 'price item-price' %}</span>
+                          </span>
+
+                          {% render 'price', amount: item.original_line_price, class: original_price_class %}
+
+                          {% if item.line_level_discount_allocations.size > 0 %}
+                            {% render 'price', amount: item.final_line_price, class: 'price' %}
+                          {% endif %}
+
+                          {% if item.unit_price_measurement %}
+                            {% capture unit_price_separator %}<span class="price per-unit text-light font-size-12" aria-hidden="true">&sol;</span><span class="visually-hidden">{{ 'products.per' | t }}</span>{% endcapture %}
+                            {% capture unit_price_base_unit %}<span class="price per-unit text-light font-size-12">{% if item.unit_price_measurement.reference_value != 1 %}{{ item.unit_price_measurement.reference_value }}{% endif %}{{ item.unit_price_measurement.reference_unit }}</span>{% endcapture %}<br/><span class="price per-unit text-light font-size-12" data-price data-base-price="{{ item.unit_price }}" {{ ms }}>{{ item.unit_price | money_with_currency_format }}</span>{{ unit_price_separator }}{{ unit_price_base_unit }}
+                          {%- endif -%}
+
+                        </div>
+
+                      </div>
+                    </div>
+
+                  </div>
+                </div>
+
+              </div>
+
+              {% render 'separator', class: 'lined full margin-top margin-bottom' %}
+
+            {% endfor %}
+          </div>
+
+          {% render 'separator' %}
+
+          <div class="row checkout text-center text-right-large">
+            <div class="columns small-12">
+
+              <div class="row">
+
+                <div class="columns small-12 large-6">
+                  {% if section.settings.enable_cart_notes %}
+                    <div class="cart-note">
+                      <label for="cart-note" class="cart-note-label text-left-medium">{{ 'cart.general.add_note' | t }}</label>
+                      <textarea name="note" id="cart-note" rows="3">{{ cart.note }}</textarea>
+                    </div>
+                    {% render 'separator' %}
+                  {% endif %}
+                </div>
+
+                <div class="columns small-12 large-6">
+
+                  {% if cart.cart_level_discount_applications.size > 0 %}
+
+                    <div class="subtotal row">
+                      <div class="totals-title columns small-6 font-size-13">
+                        <span class="subtotal-title">{{ 'cart.general.subtotal' | t }}</span>
+                      </div>
+                      <div class="columns small-6 text-right">
+                        {% render 'price', amount: cart.original_total_price %}
+                      </div>
+                    </div>
+
+                    <div class="discounts">
+                      {% for discount_application in cart.cart_level_discount_applications %}
+                        <div class="row">
+                          <div class="totals-title columns small-6 font-size-13">
+                            <span class="discounts-title">{{ 'cart.general.savings' | t }}</span> ({{ discount_application.title }})
+                          </div>
+                          <div class="small-6 columns text-right">
+                            -{% render 'price', amount: discount_application.total_allocated_amount %}
+                          </div>
+                        </div>
+                      {% endfor %}
+                    </div>
+
+                    {% render 'separator', class: 'no-margin-top margin-bottom-50' %}
+
+                  {% endif %}
+
+                  <div class="total row">
+                    <div class="totals-title columns small-6 font-size-13">
+                      <span class="total-title">{{ 'cart.general.total' | t }}</span>
+                    </div>
+                    <div class="columns small-6 text-right">
+                      {% render 'price', amount: cart.total_price, class: 'price' %}
+                    </div>
+                  </div>
+
+                  {% render 'separator', class: 'margin-top' %}
+
+                  <div class="shipping text-light font-size-13">
+                    {{ 'cart.general.shipping_at_checkout' | t }}
+                  </div>
+
+                  {% render 'separator' %}
+
+                  <div class="actions">
+                    <input type="submit" name="update" class="button secondary update" value="{{ 'cart.general.update' | t }}">
+                    <input type="submit" name="checkout" class="button checkout" value="{{ 'cart.general.checkout' | t }}">
+                  </div>
+
+                  {% if additional_checkout_buttons and section.settings.show_additional_checkout_buttons %}
+                    <div class="additional-checkout-buttons">
+                      {{ content_for_additional_checkout_buttons }}
+                    </div>
+                  {% endif %}
+
+                  <div class="continue-shopping text-light font-size-13 margin-top">
+                    <a href="{{ routes.all_products_collection_url }}">{{ 'cart.general.continue_shopping' | t }}</a>
+                  </div>
+
+                </div>
+
+              </div>
+
+            </div>
+          </div>
+
+        </form>
+
+      </div>
+
+    {% else %}
+
+      <div class="text-center padding-top-200 padding-bottom-200">
+
+        {% render 'page-header' %}
+
+        {% render 'separator', class: 'lined margin-top margin-bottom' %}
+
+        {{ 'cart.general.empty_html' | t }}
+
+      </div>
+
+    {% endif %}
+
+    {% if section.settings.cart_page_content != empty %}
+      <div class="rte margin-top-250">
+        {{ pages[section.settings.cart_page_content].content }}
+      </div>
+    {% endif %}
+
+  {% render 'section-close' %}
+
+{% render 'content-close' %}
+
+{% schema %}
+{
+  "name": "t:sections.main-cart.name",
+  "settings": [
+    {
+      "type": "checkbox",
+      "id": "show_additional_checkout_buttons",
+      "label": "t:sections.main-cart.settings.show_additional_checkout_buttons.label",
+      "default": true
+    },
+    {
+      "label": "t:sections.main-cart.settings.show_checkout_buttons_top.label",
+      "id": "show_checkout_buttons_top",
+      "type": "checkbox",
+      "default": true
+    },
+    {
+      "type": "checkbox",
+      "id": "enable_cart_notes",
+      "label": "t:sections.main-cart.settings.enable_cart_notes.label",
+      "default": true
+    },
+    {
+      "type": "page",
+      "id": "cart_page_content",
+      "label": "t:sections.main-cart.settings.cart_page_content.label"
+    }
+  ]
+}
+{% endschema %}

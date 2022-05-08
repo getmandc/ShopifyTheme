@@ -1,0 +1,157 @@
+{% assign blog = blogs[section.settings.blog] %}
+
+{% render 'section-open', section: section, type: 'blog', class: 'column-max' %}
+
+  <style>
+    {% if section.settings.article_limit == 1 %}
+      @media screen and (min-width: 640px) {
+        #shopify-section-{{ section.id }} .blog-article,
+        #shopify-section-{{ section.id }} .blog-article .meta {
+          text-align: center !important;
+        }
+      }
+    {% endif %}
+  </style>
+
+  <div class="blog-articles medium-item-grid-{{ section.settings.article_limit }}">
+    {% if blog != empty and blog.articles_count > 0 %}
+
+      {% assign show_tags = section.settings.show_tags %}
+
+      {% for article in blog.articles limit: section.settings.article_limit %}
+
+        {% if article.tags.size < 1 %}
+          {% assign show_tags = false %}
+        {% endif %}
+
+        <article class="blog-article item">
+
+          {% if section.settings.show_image %}
+            {% render 'image', image: article.image, image_type: 'article', image_link_url: article.url %}
+            {% render 'separator', class: 'margin-top-50' %}
+          {% endif %}
+
+          <header>
+            <h1 class="title no-margin">{{ article.title | link_to: article.url }}</h1>
+          </header>
+
+          {% if section.settings.show_publish_date or section.settings.show_author or section.settings.show_comment_count %}
+            {% render 'separator' class:'margin-top-25 no-margin-bottom' %}
+            {% render 'article-meta', blog: blog, article: article, class: 'text-left text-light font-size-13 lht', show_publish_date: section.settings.show_publish_date, show_author: section.settings.show_author, show_comment_count: section.settings.show_comment_count %}
+            {% render 'separator', class: 'no-margin-top margin-bottom-50' %}
+          {% else %}
+            {% render 'separator', class: 'no-margin-top margin-bottom-25' %}
+          {% endif %}
+
+          {% if section.settings.show_excerpt %}
+            <div class="body">
+              {{ article.excerpt_or_content | strip_html | truncatewords: 30 }}
+            </div>
+          {% endif %}
+
+          {% if section.settings.show_article_link %}
+            {% render 'separator', class: 'lined margin-top margin-bottom' %}
+            <p class="article-link no-margin text-center"><a href="{{ article.url }}">{{ 'blog.article_list.go_to_article' | t }}</a></p>
+          {% endif %}
+
+          {% render 'json-ld-article', article: article %}
+
+        </article>
+
+      {% endfor %}
+
+    {% else %}
+
+      {% for i in (1..section.settings.article_limit) %}
+        <article class="blog-article mod-onboarding item">
+
+          {% if section.settings.show_image %}
+            {% render 'image', image_type: 'collection', image_placeholder: true %}
+            {% render 'separator', class: 'margin-top-50' %}
+          {% endif %}
+
+          <header>
+            <h1 class="title margin-bottom-50">{{ 'onboarding.blog_title' | t }}</h1>
+          </header>
+
+          {% if section.settings.show_excerpt %}
+            <div class="body">
+              {{ 'onboarding.blog_content' | t }}
+            </div>
+          {% endif %}
+
+        </article>
+      {% endfor %}
+
+    {% endif %}
+  </div>
+
+{% render 'section-close' %}
+
+
+{% schema %}
+{
+  "name": "t:sections.featured-blog.name",
+  "class": "index-section section-featured-blog",
+  "settings": [
+    {
+      "type": "text",
+      "id": "title",
+      "label": "t:sections.featured-blog.settings.title.label"
+    },
+    {
+      "id": "blog",
+      "type": "blog",
+      "label": "t:sections.featured-blog.settings.blog.label"
+    },
+    {
+      "type": "range",
+      "id": "article_limit",
+      "label": "t:sections.featured-blog.settings.article_limit.label",
+      "min": 1,
+      "max": 6,
+      "step": 1,
+      "default": 3
+    },
+    {
+      "type": "checkbox",
+      "id": "show_publish_date",
+      "label": "t:sections.featured-blog.settings.show_publish_date.label",
+      "default": true
+    },
+    {
+      "type": "checkbox",
+      "id": "show_author",
+      "label": "t:sections.featured-blog.settings.show_author.label",
+      "default": false
+    },
+    {
+      "type": "checkbox",
+      "id": "show_comment_count",
+      "label": "t:sections.featured-blog.settings.show_comment_count.label",
+      "default": false
+    },
+    {
+      "type": "checkbox",
+      "id": "show_image",
+      "label": "t:sections.featured-blog.settings.show_image.label",
+      "default": true
+    },
+    {
+      "type": "checkbox",
+      "id": "show_excerpt",
+      "label": "t:sections.featured-blog.settings.show_excerpt.label",
+      "default": true
+    }
+  ],
+  "presets": [
+    {
+      "name": "t:sections.featured-blog.presets.name",
+      "category": "Blog",
+      "settings": {
+        "blog": "News"
+      }
+    }
+  ]
+}
+{% endschema %}

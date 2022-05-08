@@ -1,0 +1,6 @@
+{% if form.errors contains field %}
+  <div class="field-error-message">
+    <span class="visually-hidden">{{ 'general.accessibility.error' | t }}</span>
+    {{ field | capitalize }} {{ form.errors.messages[field] }}
+  </div>
+{% endif %}

@@ -1,0 +1,157 @@
+{% comment %}
+  The variables here are used by both the product detail pages (sections/product-template.liquid) and the collection pages (snippets/products.liquid)
+{% endcomment %}
+
+{% assign on_sale = false %}
+{% assign sold_out = false %}
+{% assign backorder_class = 'backorder-notice hidden lht' %}
+{% assign compare_at_class = 'price compare-at text-light font-size-14 fw-300 lht inline-block' %}
+{% assign from_class = 'from text-light font-size-14' %}
+{% assign sale_sticker_class = 'badge sale sale-sticker' %}
+{% assign price_class = 'price sell-price font-size-14 fw-600 lht inline-block' %}
+
+{% assign unit_price_class = 'price unit-price text-light font-size-12 lht inline-block' %}
+{% assign unit_price_separator_class = 'unit-price-separator text-light font-size-12 lht inline-block' %}
+{% assign unit_price_base_unit_class = 'unit-price-base-unit text-light font-size-12 lht inline-block' %}
+
+{% assign product_class = product_class %}
+{% assign add_to_cart_button_class = 'add-to-cart button width-100' %}
+{% assign smart_payment_button_container_class = 'smart-payment-button-container' %}
+{% assign variant = product.selected_or_first_available_variant %}
+
+{% unless show_add_to_cart_button %}
+  {% assign show_add_to_cart_button = section.settings.show_add_to_cart_button %}
+{% endunless %}
+
+{% unless show_compare_at_price %}
+  {% assign show_compare_at_price = section.settings.show_compare_at_price %}
+{% endunless %}
+
+{% unless show_from %}
+  {% assign show_from = section.settings.show_from %}
+{% endunless %}
+
+{% unless show_price %}
+  {% assign show_price = section.settings.show_price %}
+{% endunless %}
+
+{% unless show_sale_sticker %}
+  {% assign show_sale_sticker = section.settings.show_sale_sticker %}
+{% endunless %}
+
+{% unless show_variant_selector %}
+  {% assign show_variant_selector = section.settings.show_variant_selector %}
+{% endunless %}
+
+{% unless show_vendor %}
+  {% assign show_vendor = section.settings.show_vendor %}
+{% endunless %}
+
+{% if location == 'secondary' %}
+  {% assign product_image_size = secondary_block_image_size %}
+{% else %}
+  {% assign product_image_size = collection_product_image_size %}
+{% endif %}
+
+{% comment %}
+  Use selected or first available variant pricing when on the product detail page and general product pricing on the collection pages
+{% endcomment %}
+{% if pricing == 'variant' %}
+  {% assign price = variant.price %}
+  {% assign price_varies = variant.price_varies %}
+  {% assign compare_at_price = variant.compare_at_price %}
+  {% assign unit_price = variant.unit_price %}
+  {% assign unit_price_measurement = variant.unit_price_measurement %}
+{% else %}
+  {% assign price = product.price %}
+  {% assign price_varies = product.price_varies %}
+  {% assign compare_at_price = product.compare_at_price %}
+  {% assign cheapest_variant = product.variants | sort: 'price' | first %}
+  {% assign unit_price = cheapest_variant.unit_price %}
+  {% assign unit_price_measurement = cheapest_variant.unit_price_measurement %}
+{% endif %}
+
+{% comment %}
+  Mark the product/variant as on sale if it has a 'compare at' price that's higher than the sell price
+{% endcomment %}
+{% if pricing == 'variant' %}
+  {% if variant.compare_at_price > variant.price %}
+    {% assign on_sale = true %}
+    {% assign product_class = product_class | append: ' on-sale' %}
+  {% endif %}
+{% else %}
+  {% if product.compare_at_price > product.price %}
+    {% assign on_sale = true %}
+    {% assign product_class = product_class | append: ' on-sale' %}
+  {% endif %}
+{% endif %}
+
+{% comment %}
+  Mark the product as sold out if the variant is unavailable for purchase
+{% endcomment %}
+{% unless variant.available %}
+  {% assign sold_out = true %}
+  {% assign product_class = product_class | append: ' sold-out' %}
+{% endunless %}
+
+{% comment %}
+  Hide 'from' text unless the product/variant has multiple variants with different prices AND the 'show from' section setting is enabled
+{% endcomment %}
+{% unless price_varies and show_from %}
+  {% assign from_class = from_class | append: ' hidden' %}
+{% endunless %}
+
+{% unless unit_price and unit_price_measurement %}
+  {% assign unit_price_class = unit_price_class | append: ' hidden' %}
+  {% assign unit_price_separator_class = unit_price_separator_class | append: ' hidden' %}
+  {% assign unit_price_base_unit_class = unit_price_base_unit_class | append: ' hidden' %}
+{% endunless %}
+
+{% comment %}
+  Hide the 'compare at' price unless the product/variant is 'on sale' AND the 'show compare at' section setting is enabled
+{% endcomment %}
+{% unless on_sale and show_compare_at_price %}
+  {% assign compare_at_class = compare_at_class | append: ' hidden' %}
+{% endunless %}
+
+{% comment %}
+  Hide the price unless the 'show price' section setting is enabled
+{% endcomment %}
+{% unless show_price %}
+  {% assign price_class = price_class | append: ' hidden' %}
+{% endunless %}
+
+{% comment %}
+  Hide the 'on sale' sticker unless the product is on sale and the 'show sale sticker' section setting is enabled
+{% endcomment %}
+{% unless on_sale and show_sale_sticker %}
+  {% assign sale_sticker_class = sale_sticker_class | append: ' hidden' %}
+{% endunless %}
+
+{% comment %}
+  Hide the backorder notice unless product is on backorder
+{% endcomment %}
+{% if variant.inventory_policy == 'continue' and variant.inventory_quantity <= 0 %}
+  {% assign backorder_class = backorder_class | replace: ' hidden', '' %}
+{% endif %}
+
+{% comment %}
+  Control the smart button visibility
+{% endcomment %}
+{% unless variant.available %}
+  {% assign smart_payment_button_container_class = smart_payment_button_container_class | append: ' hidden' %}
+{% endunless %}
+
+{% comment %}
+  Make the add to cart button a secondary button if the smart button is visible
+{% endcomment %}
+{% if section.settings.enable_payment_button and variant.available %}
+  {% assign add_to_cart_button_class = add_to_cart_button_class | append: ' secondary' %}
+{% endif %}
+
+{% comment %}
+  Set the price for demo products
+{% endcomment %}
+{% unless product.id %}
+  {% assign price = forloop.index | times: 5000 | plus: 5000 %}
+{% endunless %}

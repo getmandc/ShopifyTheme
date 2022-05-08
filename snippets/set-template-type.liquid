@@ -1,0 +1,6 @@
+{% assign template_type = template %}
+
+{% if template contains '.' %}
+  {% assign template_parts = template | split: '.' %}
+  {% assign template_type = template_parts[0] %}
+{% endif %}

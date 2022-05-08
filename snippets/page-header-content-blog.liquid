@@ -1,0 +1,14 @@
+{% render 'separator', class: 'margin-top-50 no-margin-bottom hide-for-large' %}
+
+{% if section.settings.show_tag_filter and blog.tags.size > 0 %}
+  <div class="page-header-module">
+    <form class="blog-tag-filter" action="" method="post">
+      <select class="jump-menu" name="nav">
+        <option value="{{ routes.root_url }}{% if routes.root_url != '/' %}/{% endif %}blogs/{{ blog.handle }}">{{ 'blog.article_list.tags' | t }}</option>
+        {% for tag in blog.all_tags %}
+          <option value="{{ routes.root_url }}{% if routes.root_url != '/' %}/{% endif %}blogs/{{ blog.handle }}/tagged/{{ tag | handleize }}" {% if current_tags contains tag %}selected{% endif %}>{{ tag }}</option>
+        {% endfor %}
+      </select>
+    </form>
+  </div>
+{% endif %}

@@ -1,0 +1,149 @@
+{% render 'section-open', section: section, type: 'rich-text', title: false %}
+
+  {% if section.blocks.size > 0 %}
+
+    {% for block in section.blocks %}
+
+      {% render 'block-open', section: section, block: block %}
+
+        <style>
+          #section-block-{{ block.type }}-{{ block.id }} .section-block-header-heading,
+          #section-block-{{ block.type }}-{{ block.id }} .rte {
+            color: {{ block.settings.color }};
+            text-align: {{ block.settings.alignment }};
+          }
+        </style>
+
+        {% if block.type == 'text' %}
+          <span class="rte">
+            {{ block.settings.text }}
+          </span>
+        {% elsif block.type == 'page' %}
+          {% assign page = pages[block.settings.page] %}
+          {% if page != empty %}
+            <span class="rte">
+              {{ page.content }}
+            </span>
+          {% else %}
+            <div class="no-content">
+              <p class="no-margin">{{ 'onboarding.select_page' | t }}</p>
+            </div>
+          {% endif %}
+        {% endif %}
+
+      {% render 'block-close' %}
+
+      {% unless forloop.last %}
+        {% render 'separator', class: 'margin-top-50 margin-bottom' %}
+      {% endunless %}
+
+    {% endfor %}
+
+  {% else %}
+
+    {% render 'no-blocks' %}
+
+  {% endif %}
+
+{% render 'section-close' %}
+
+
+{% schema %}
+{
+  "name": "t:sections.rich-text.name",
+  "class": "index-section section-rich-text",
+  "max_blocks": 2,
+  "settings": [
+    {
+      "id": "width",
+      "type": "select",
+      "label": "t:sections.rich-text.settings.width.label",
+      "options": [
+        {
+          "value": "column-max",
+          "label": "t:sections.rich-text.settings.width.option__1.label"
+        },
+        {
+          "value": "width-100",
+          "label": "t:sections.rich-text.settings.width.option__2.label"
+        }
+      ],
+      "default": "column-max"
+    }
+  ],
+  "blocks": [
+    {
+      "type": "text",
+      "name": "t:sections.rich-text.blocks.text.name",
+      "settings": [
+        {
+          "id": "title",
+          "type": "text",
+          "label": "t:sections.rich-text.blocks.text.settings.title.label",
+          "default": "Talk about your brand"
+        },
+        {
+          "id": "text",
+          "type": "richtext",
+          "label": "t:sections.rich-text.blocks.text.settings.text.label",
+          "default": "<p>Use this text to share information about your brand with your customers. Describe a product, share announcements, or welcome customers to your store.</p>"
+        },
+        {
+          "id": "alignment",
+          "type": "select",
+          "label": "t:sections.rich-text.blocks.text.settings.alignment.label",
+          "options": [
+            {
+              "value": "left",
+              "label": "t:sections.rich-text.blocks.text.settings.alignment.option__1.label"
+            },
+            {
+              "value": "center",
+              "label": "t:sections.rich-text.blocks.text.settings.alignment.option__2.label"
+            },
+            {
+              "value": "right",
+              "label": "t:sections.rich-text.blocks.text.settings.alignment.option__3.label"
+            }
+          ],
+          "default": "left"
+        },
+        {
+          "id": "color",
+          "type": "color",
+          "label": "t:sections.rich-text.blocks.text.settings.color.label",
+          "default": "#2a2b2b"
+        }
+      ]
+    },
+    {
+      "type": "page",
+      "name": "t:sections.rich-text.blocks.page.name",
+      "settings": [
+        {
+          "id": "title",
+          "type": "text",
+          "label": "t:sections.rich-text.blocks.page.settings.title.label"
+        },
+        {
+          "id": "page",
+          "type": "page",
+          "label": "t:sections.rich-text.blocks.page.settings.page.label"
+        }
+      ]
+    }
+  ],
+  "presets": [
+    {
+      "name": "t:sections.rich-text.presets.name",
+      "category": "Text",
+      "settings": {},
+      "blocks": [
+        {
+          "type": "text"
+        }
+      ]
+    }
+  ]
+}
+{% endschema %}

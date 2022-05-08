@@ -1,0 +1,65 @@
+{% assign theme_name = 'Providence' %}
+{% assign theme_version = '5.11.10' %}
+
+{% assign cdn = 'https://cdnjs.cloudflare.com/ajax/libs/' %}
+
+{% assign date_format = '%B %d, %Y' %}
+{% assign date_time_format = '%B %d, %Y %I:%M %p %Z' %}
+{% assign time_format = '%I:%M %p %Z' %}
+
+{% assign content_padding_top_class = 'padding-top' %}
+{% assign content_padding_bottom_class = 'padding-bottom-200' %}
+
+{% assign sidebar_span = 3 %}
+{% assign sidebar_show_small = true %}
+
+{% assign article_comments_per_page = 10 %}
+
+{% assign blog_articles_per_page = 10 %}
+{% assign blog_image_size = '1024x1024' %}
+
+{% assign cart_product_image_size = '100x' %}
+
+{% assign product_enable_deep_linking = true %}
+{% assign product_enable_highlight_add_when_sale = true %}
+{% assign product_enable_lightbox = true %}
+{% assign product_enable_qty_limit = false %}
+{% assign product_enable_select_an_option = false %}
+{% assign product_enable_set_variant_from_secondary = true %}
+{% assign product_primary_image_size = '1024x1024' %}
+{% assign product_secondary_image_size = '180x' %}
+{% assign product_lightbox_image_size = 'master' %}
+{% assign product_selectors_per_row_small = 1 %}
+{% assign product_selectors_per_row_medium = 1 %}
+{% assign product_selectors_per_row_large = 2 %}
+{% assign product_show_multi_selectors = true %}
+{% assign product_show_single_selector = false %}
+{% assign product_show_product_image_first = false %}
+{% assign product_thumbnails_per_row_small = 4 %}
+{% assign product_thumbnails_per_row_medium = 4 %}
+{% assign product_thumbnails_per_row_large = 6 %}
+
+{% assign collection_image_size = '460x' %}
+{% assign collection_product_image_size = '460x' %}
+{% assign collection_products_per_row_small = 2 %}
+{% assign collection_products_per_row_medium = 3 %}
+{% assign collection_products_per_row_large = 4 %}
+{% assign collection_list_exclude = '' %}
+
+{% assign rich_snippet_article_image_width = '800' %}
+{% assign rich_snippet_article_image_height = '600' %}
+{% assign rich_snippet_product_image_width = '800' %}
+{% assign rich_snippet_product_image_height = '600' %}
+
+{% assign meta_social_image_size = '1200x630' %}
+
+{% assign primary_block_image_size = '1200x800' %}
+{% assign secondary_block_image_size = '800x600' %}
+
+{% assign slideshow_image_size = '1400x' %}
+
+{% if shop.customer_accounts_enabled and customer %}
+  {% assign customer_logged_in = true %}
+{% else %}
+  {% assign customer_logged_in = false %}
+{% endif %}

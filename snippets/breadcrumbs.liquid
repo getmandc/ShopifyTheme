@@ -1,0 +1,42 @@
+{% assign account_text = 'shopify.page_titles.account' | t %}
+{% assign home_text = 'general.breadcrumbs.home' | t %}
+{% assign search_text = 'shopify.page_titles.search' | t %}
+{% assign margin = section.settings.margin_top | append: ' ' | append: section.settings.margin_bottom %}
+
+<div class="{{ section.settings.width | append: ' ' | append: margin }}">
+  <nav class="breadcrumbs {{ class }}" role="navigation" aria-label="Breadcrumbs">
+
+    {{ home_text | link_to: routes.root_url, home_text }}
+
+    {% if template contains 'customer' %}
+      {% if template != 'customers/account' %}
+        {{ account_text | link_to: routes.account_url }}
+      {% endif %}
+    {% endif %}
+
+    {% if template contains 'collection' and collection.handle %}
+      {% capture collection_url %}{{ routes.root_url }}{% if routes.root_url != '/' %}/{% endif %}collections/{{ collection.handle }}{% endcapture %}
+      {{ page_title | link_to: collection_url, page_title }}
+    {% elsif template contains 'product' %}
+      {%- assign product_url = product.url -%}
+      {% if collection and collection.handle %}
+        {% capture collection_url %}{{ routes.root_url }}{% if routes.root_url != '/' %}/{% endif %}collections/{{ collection.handle }}{% endcapture %}
+        {% assign product_url = product.url | within: collection %}
+        {{ collection.title | link_to: collection_url, collection.title }}
+      {% endif %}
+      {{ page_title | link_to: product_url, page_title }}
+    {% elsif template == 'article' %}
+      {{ blog.title | link_to: blog.url, blog.title }}
+      {{ article.title | link_to: article.url, article.title }}
+    {% elsif template contains 'search' %}
+      {{ search_text | link_to: routes.search_url, search_text }}
+    {% else %}
+      {{ page_title | link_to: page.url, page_title }}
+    {% endif %}
+
+    {% if current_tags %}
+      {{ current_tags | join: " + " | link_to: "#" }}
+    {% endif %}
+
+  </nav>
+</div>

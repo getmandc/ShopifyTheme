@@ -1,0 +1,100 @@
+<!doctype html>
+
+{% assign html_class = 'no-js' | append: ' ' | append: template %}
+{% assign cdn = 'https://cdnjs.cloudflare.com/ajax/libs/' %}
+
+{% if template contains '.' %}
+  {% assign template_classes = template | split: '.' %}
+  {% assign template_classes_handled = template | replace: '.', '-' %}
+  {% assign html_class = template_classes[0] | append: ' ' | append: template_classes_handled %}
+{% endif %}
+
+{% if template contains '/' %}
+  {% assign template_classes = template | split: '/' %}
+  {% assign template_classes_handled = template | replace: '/', '-' %}
+  {% assign html_class = template_classes[0] | append: ' ' | append: template_classes_handled %}
+{% endif %}
+
+{% assign page_title_handle = page_title | handle %}
+{% assign html_class = html_class | append: ' ' | append: page_title_handle %}
+{% assign template_type = template %}
+
+{% if template contains '.' %}
+  {% assign template_parts = template | split: '.' %}
+  {% assign template_type = template_parts[0] %}
+{% endif %}
+
+<!-- Proudly powered by Shopify - https://shopify.com -->
+
+<html class="{{ html_class }}" lang="{{ request.locale.iso_code }}">
+
+  <head>
+
+    {% render 'meta', template_type: template_type %}
+    {% render 'meta-social', template_type: template_type %}
+
+    <link rel="preconnect" href="https://cdn.shopify.com" crossorigin>
+    <link rel="preconnect" href="https://fonts.shopify.com" crossorigin>
+
+    {% render 'preload-fonts' %}
+    {% render 'css-variables' %}
+
+    {% render 'initial-css' %}
+
+    <link rel="stylesheet" href="{{ 'theme-vendor.css' | asset_url }}" type="text/css" media="print" onload="this.media='all'">
+    <link rel="stylesheet" href="{{ 'theme.css' | asset_url }}" type="text/css" media="all" onload="this.media='all'">
+    <link rel="stylesheet" href="{{ 'theme-custom.css' | asset_url }}" type="text/css" media="print" onload="this.media='all'">
+    <link rel="stylesheet" href="{{ 'fonts.css' | asset_url }}" type="text/css" media="print" onload="this.media='all'">
+
+    <noscript>
+      <link rel="stylesheet" href="{{ 'theme-vendor.css' | asset_url }}" type="text/css" media="all">
+      <link rel="stylesheet" href="{{ 'theme.css' | asset_url }}" type="text/css" media="all">
+      <link rel="stylesheet" href="{{ 'fonts.css' | asset_url }}" type="text/css" media="all">
+    </noscript>
+
+    {% render 'initial-js' %}
+
+    {% render 'lazysizes', cdn: cdn %}
+
+    {% render 'theme-js-config', template_type: template_type %}
+
+    <script type="text/javascript" src="{{ 'theme-vendor.js' | asset_url }}" defer="defer"></script>
+    {%- if request.page_type contains 'customers/' -%}
+      <script src="{{ 'shopify_common.js' | shopify_asset_url }}" defer="defer"></script>
+    {%- endif -%}
+
+    {% if template contains 'customers' %}
+      <script src="{{ 'customer_area.js' | shopify_asset_url }}" defer="defer"></script>
+    {% endif %}
+
+    <script type="text/javascript" src="/services/javascripts/currencies.js" defer="defer"></script>
+    <script type="text/javascript" src="{{ 'jquery.currencies.min.js' | asset_url }}" defer="defer"></script>
+    <script type="text/javascript" src="{{ 'theme.js' | asset_url }}" defer="defer"></script>
+    <script type="text/javascript" src="{{ 'theme-custom.js' | asset_url }}" defer="defer"></script>
+
+    {{ content_for_header }}
+  </head>
+
+  <body>
+
+    <div id="loading">
+      <div class="spinner"></div>
+    </div>
+
+    {% render 'facebook-sdk' %}
+
+    {% section 'header' %}
+
+    <div id="app-body">
+      <div id="app-body-inner">
+        {{ content_for_layout }}
+      </div>
+    </div>
+
+    {% section 'footer' %}
+
+    <div id="overlay-background"></div>
+
+    <script async src="//platform.twitter.com/widgets.js" charset="utf-8"></script>
+  </body>
+</html>

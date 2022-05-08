@@ -1,0 +1,77 @@
+{% unless next_obj %}
+  {% assign next_obj = paginate.next %}
+{% endunless %}
+
+{% unless prev_obj %}
+  {% assign prev_obj = paginate.previous %}
+{% endunless %}
+
+{% unless next_url %}
+  {% assign next_url = paginate.next.url %}
+{% endunless %}
+
+{% unless prev_url %}
+  {% assign prev_url = paginate.previous.url %}
+{% endunless %}
+
+{% unless next_text %}
+  {% assign next_text = 'shopify.pagination.next' | t %}
+{% endunless %}
+
+{% unless prev_text %}
+  {% assign prev_text = 'shopify.pagination.previous' | t %}
+{% endunless %}
+
+{% unless separator_class %}
+  {% assign separator_class = 'lined full margin-top-200 margin-bottom' %}
+{% endunless %}
+
+{% if paginate.pages > 1 or show_pagination %}
+
+  {% if prev_obj or next_obj %}
+    {% render 'separator', class: separator_class %}
+  {% endif %}
+
+  <div class="pagination row">
+
+    <div class="small-12 medium-4 columns prev">
+      {% if prev_obj %}
+        <a class="text-light" href="{{ prev_url }}">{{ prev_text }}</a>
+      {% endif %}
+    </div>
+
+    <div class="small-12 medium-4 columns pages">
+      {% if paginate.parts.size > 0 %}
+        {% for part in paginate.parts %}
+          {%- liquid
+            assign part_class = 'part'
+            if paginate.current_page == part.title
+              assign part_class = part_class | append: ' current'
+            endif
+
+            capture part_link
+              if part.is_link
+                echo part.title | link_to: part.url
+              else
+                echo part.title
+              endif
+            endcapture
+          -%}
+
+          <span class="{{ part_class }}">{{ part_link }}</span>
+
+        {% endfor %}
+      {% endif %}
+    </div>
+
+    <div class="small-12 medium-4 columns next">
+      {% if next_obj %}
+        <a class="text-light" href="{{ next_url }}">{{ next_text }}</a>
+      {% endif %}
+    </div>
+
+  </div>
+
+{% endif %}
+
+{% assign separator_class = nil %}

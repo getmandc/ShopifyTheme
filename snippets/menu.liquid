@@ -1,0 +1,58 @@
+<ul>
+  {% for l1_link in menu.links %}
+
+    {% assign l1_link_class = 'nav-item nav-level-1' %}
+    {% if l1_link.active or l1_link.child_active %}
+      {% assign l1_link_class = l1_link_class | append: ' nav-active' %}
+    {% endif %}
+    {% if l1_link.links.size > 0 %}
+      {% assign l1_link_class = l1_link_class | append: ' nav-node' %}
+    {% endif %}
+
+    <li class="{{ l1_link_class }}">
+
+      <a href="{{ l1_link.url }}">{{ l1_link.title }}{% if l1_link.links.size > 0 and levels > 1 %}{% render 'icon-caret' %}{% endif %}</a>
+
+      {% if l1_link.links.size > 0 and levels > 1 %}
+        <ul>
+          {% for l2_link in l1_link.links %}
+
+            {% assign l2_link_class = 'nav-item nav-level-2' %}
+            {% if l2_link.active or l2_link.child_active %}
+              {% assign l2_link_class = l2_link_class | append: ' nav-active' %}
+            {% endif %}
+            {% if l2_link.links.size > 0 %}
+              {% assign l2_link_class = l2_link_class | append: ' nav-node' %}
+            {% endif %}
+
+            <li class="{{ l2_link_class }}">
+
+              <a href="{{ l2_link.url }}">{{ l2_link.title }}{% if l2_link.links.size > 0 and levels > 2 %}{% render 'icon-caret' %}{% endif %}</a>
+
+              {% if l2_link.links.size > 0 and levels > 2 %}
+                <ul>
+                  {% for l3_link in l2_link.links %}
+
+                    {% assign l3_link_class = 'nav-item nav-level-3' %}
+                    {% if l3_link.active or l3_link.child_active %}
+                      {% assign l3_link_class = l3_link_class | append: ' nav-active' %}
+                    {% endif %}
+
+                    <li class="{{ l3_link_class }}">
+                      <a href="{{ l3_link.url }}">{{ l3_link.title }}</a>
+                    </li>
+
+                  {% endfor %}
+                </ul>
+              {% endif %}
+
+            </li>
+
+          {% endfor %}
+        </ul>
+      {% endif %}
+
+    </li>
+
+  {% endfor %}
+</ul>

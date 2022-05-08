@@ -1,0 +1,9 @@
+{% render 'separator', class: 'margin-top-50 no-margin-bottom hide-for-large' %}
+
+{% if section.settings.enable_sorting %}
+  {% render 'collection-sort' %}
+{% endif %}
+
+{% if section.settings.enable_tag_filtering %}
+  {% render 'collection-filter' %}
+{% endif %}

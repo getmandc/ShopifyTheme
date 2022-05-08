@@ -1,0 +1,11 @@
+{% assign date_format = '%B %d, %Y' %}
+
+{% unless class %}
+  {% assign class = 'text-light text-center font-size-14 lht' %}
+{% endunless %}
+
+<div class="meta {{ class }}">
+  {% if show_publish_date %}<span class="published group">{{ article.published_at | time_tag: date_format }}</span>{% endif %}{% if show_author %}<span class="author group">{{ article.author }}</span>{% endif %}{% if show_comment_count %}{% if blog.comments_enabled? and article.comments.size > 0 %}<span class="comment-count group"><a class="text-light" href="{{ article.url }}#comments">{{ 'blog.comments.count' | t: count: article.comments_count }}</a></span>{% endif %}{% endif %}
+</div>
+
+{% assign class = nil %}

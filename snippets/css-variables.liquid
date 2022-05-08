@@ -1,0 +1,88 @@
+{% style %}
+  :root {
+    /* Content */
+
+    --bg_header_color: {{ settings.bg_header_color }};
+    --color_header_text: {{ settings.color_header_text }};
+    --color_content_heading: {{ settings.color_content_heading }};
+    --color_content_text: {{ settings.color_content_text }};
+    --color_content_text_light: {{ settings.color_content_text_light }};
+    --color_content_text_extra_light: {{ settings.color_content_text_light | color_modify: 'alpha', 0.2  }};
+    --color_content_link: {{ settings.color_content_link }};
+    --color_content_link_hover: {{ settings.color_content_link_hover }};
+    --color_content_line: {{ settings.color_content_line }};
+    --bg_content_color: {{ settings.bg_content_color }};
+
+    /* Button */
+    --bg_content_button: {{ settings.bg_content_button }};
+    --bg_content_button_hover: {{ settings.bg_content_button_hover }};
+    --color_content_button_text: {{ settings.color_content_button_text }};
+    --color_content_button_text_hover: {{ settings.color_content_button_text_hover }};
+    --bg_content_button_alpha_05: {{ settings.bg_content_button | color_modify: 'alpha', 0.05 }};
+
+    /* Top Bar */
+    --color_top_bar_text: {{ settings.color_top_bar_text }};
+    --color_top_bar_link: {{ settings.color_top_bar_link }};
+    --color_top_bar_link_hover: {{ settings.color_top_bar_link_hover }};
+    --bg_top_bar_color: {{ settings.bg_top_bar_color }};
+
+
+    /*Main Menu */
+    --color_main_menu_link: {{ settings.color_main_menu_link }};
+    --color_main_menu_link_hover: {{ settings.color_main_menu_link_hover }};
+    --color_header_line: {{ settings.color_header_line }};
+
+    /* Typo */
+    --typo_main_menu_dropdown_font_size: {{ settings.typo_main_menu_dropdown_font_size }}px;
+    --typo_primary_line_height: {{ settings.typo_primary_line_height }};
+
+    /* Footer */
+    --color_footer_content_text: {{ settings.color_footer_content_text }};
+    --color_footer_text: {{ settings.color_footer_text }};
+    --color_footer_link: {{ settings.color_footer_link }};
+    --color_footer_link_hover: {{ settings.color_footer_link_hover }};
+    --color_footer_content_text_light: {{ settings.color_footer_content_text_light }};
+    --color_footer_content_link: {{ settings.color_footer_content_link }};
+    --color_footer_content_link_hover: {{ settings.color_footer_content_link_hover }};
+    --bg_footer_content_color: {{ settings.bg_footer_content_color }};
+    --color_footer_content_heading: {{ settings.color_footer_content_heading }};
+    --color_footer_content_line: {{ settings.color_footer_content_line }};
+    --bg_footer_color: {{ settings.bg_footer_color }};
+    --color_footer_text_alpha_25: {{ settings.color_footer_text | color_modify: 'alpha', 0.25 }};
+
+
+    /* Misc */
+    --bg_sale_sticker_color: {{ settings.bg_sale_sticker_color }};
+    --color_sale_sticker: {{ settings.color_sale_sticker }};
+    --color_brand_link: {{ settings.color_brand_link }};
+
+
+    /* Announcement */
+    --color_announcement_bar_text: {{ settings.color_announcement_bar_text }};
+    --bg_announcement_bar_color: {{ settings.bg_announcement_bar_color }};
+
+    /* Sticky Cart */
+    --sticky_cart_text: {{ settings.sticky_cart_text }};
+    --sticky_cart_background: {{ settings.sticky_cart_background }};
+    --sticky_cart_text_hover: {{ settings.sticky_cart_text | color_lighten: 20 | color_desaturate: 20 }};
+
+    /* Custom */
+    --bg_content_color_alpha_8: {{ settings.bg_content_color | color_modify: 'alpha', 0.8 }};
+    --color_content_link_alpha_08: {{ settings.color_content_link | color_modify: 'alpha', 0.08 }};
+    --color_content_link_alpha_6: {{ settings.color_content_link | color_modify: 'alpha', 0.6 }};
+    --color_content_link_alpha_3: {{ settings.color_content_link | color_modify: 'alpha', 0.3 }};
+    --color_content_link_alpha_2: {{ settings.color_content_link | color_modify: 'alpha', 0.2 }};
+
+    /* SVGs */
+    --color_content_text_select_alpha_5: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='12px' height='7px' fill='{{ settings.color_content_text | color_modify: 'alpha', 0.5 | replace: '#', '%23' }}'%3E%3Cpath d='M0.653526932,0.762448087 C0.292593974,0.341359636 0.455760956,0 1.00247329,0 L10.5044548,0 C11.3304216,0 11.5684948,0.503422737 11.0226426,1.14025025 L6.65352693,6.23755191 C6.29259397,6.65864036 5.71060753,6.66237545 5.34647307,6.23755191 L0.653526932,0.762448087 Z'%3E%3C/path%3E%3C/svg%3E");
+    --color_content_text_select: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='12px' height='7px' fill='{{ settings.color_content_text | replace: '#', '%23' }}'%3E%3Cpath d='M0.653526932,0.762448087 C0.292593974,0.341359636 0.455760956,0 1.00247329,0 L10.5044548,0 C11.3304216,0 11.5684948,0.503422737 11.0226426,1.14025025 L6.65352693,6.23755191 C6.29259397,6.65864036 5.71060753,6.66237545 5.34647307,6.23755191 L0.653526932,0.762448087 Z'%3E%3C/path%3E%3C/svg%3E");
+    --color_footer_text_select_alpha_25: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='12px' height='7px' fill='{{ settings.color_footer_text | color_modify: 'alpha', 0.25 | replace: '#', '%23' }}'%3E%3Cpath d='M0.653526932,0.762448087 C0.292593974,0.341359636 0.455760956,0 1.00247329,0 L10.5044548,0 C11.3304216,0 11.5684948,0.503422737 11.0226426,1.14025025 L6.65352693,6.23755191 C6.29259397,6.65864036 5.71060753,6.66237545 5.34647307,6.23755191 L0.653526932,0.762448087 Z'%3E%3C/path%3E%3C/svg%3E");
+    --color_footer_text_select: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='12px' height='7px' fill='{{ settings.color_footer_text | replace: '#', '%23' }}'%3E%3Cpath d='M0.653526932,0.762448087 C0.292593974,0.341359636 0.455760956,0 1.00247329,0 L10.5044548,0 C11.3304216,0 11.5684948,0.503422737 11.0226426,1.14025025 L6.65352693,6.23755191 C6.29259397,6.65864036 5.71060753,6.66237545 5.34647307,6.23755191 L0.653526932,0.762448087 Z'%3E%3C/path%3E%3C/svg%3E");
+
+
+    /* specific colors for Shop Pay Installments Banner */
+    --payment-terms-background-color: {{ settings.bg_content_color }};
+    /* End Shop Pay Installment Banner */
+
+  }
+{% endstyle %}

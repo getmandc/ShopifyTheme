@@ -1,0 +1,35 @@
+{% render 'content-open', class: 'column-max' %}
+
+  <div class="column-extra-narrow">
+
+    {% render 'page-header', class: 'text-center' %}
+
+    <p class="message text-center text-light margin-top">{{ 'customer.activate_account.message_html' | t }}</p>
+
+    {%- assign formId = 'ActivateForm' -%}
+    {% form 'activate_customer_password', id: formId %}
+
+      {% render 'form-errors', form: form, focus_on_error: true %}
+
+      <div class="row">
+        <input type="password" id="password" name="customer[password]" value="{{ form.password }}" placeholder="{{ 'customer.activate_account.password_field_placeholder' | t }}" aria-label="{{ 'customer.activate_account.password_field_placeholder' | t }}" {% if form.errors contains 'password' %} class="error" aria-invalid="true" aria-describedby="{{ formId }}-password-confirmation-error"{% endif %}>
+        {% render 'field-error-message', form: form, field: 'password' %}
+      </div>
+
+      <div class="row">
+        <input type="password" id="password_confirmation" name="customer[password_confirmation]" value="{{ form.password_confirmation }}" placeholder="{{ 'customer.activate_account.password_confirmation_field_placeholder' | t }}" aria-label="{{ 'customer.activate_account.password_confirmation_field_placeholder' | t }}" {% if form.errors contains 'password_confirmation' %} class="error" aria-invalid="true" aria-describedby="{{ formId }}-password-confirmation-error"{% endif %}>
+        {% render 'field-error-message', form: form, field: 'password_confirmation' %}
+      </div>
+
+      <div class="form-actions text-center width-100">
+        <p class="no-margin-bottom">
+          <input class="button" type="submit" value="{{ 'customer.activate_account.submit' | t }}">
+          <input class="button" type="submit" name="decline" value="{{ 'customer.activate_account.cancel' | t }}">
+        </p>
+      </div>
+
+    {% endform %}
+
+  </div>
+
+{% render 'content-close' %}

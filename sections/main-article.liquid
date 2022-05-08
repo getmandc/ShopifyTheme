@@ -1,0 +1,307 @@
+{% assign date_time_format = '%B %d, %Y %I:%M %p %Z' %}
+{% assign article_comments_per_page = 10 %}
+
+{% assign comment_form_title = 'blog.comments.form_title' | t %}
+
+
+{% comment %}
+  The use of json templates introduces a limitation of calling sections from inside sections. Due to that we can no add sidebar in this file because it will create an error (issue calling section inside section). 
+  OPTIONS:
+          1. Move sideber into a block of main-article section and also move current sideber blocks to settings of the sidebar block
+          2. ?
+  It is deactivated by now
+{% endcomment %}
+
+{% render 'content-open', class: 'column-max no-padding-top', sidebar: false %}
+  {% render 'section-open', section: section, type: 'article-template' %}
+
+    <article class="blog-article {{ article.title | handleize }}">
+      <div class="row">
+        <div class="columns large-10 large-push-1">
+
+          {%- for block in section.blocks -%}
+            {%- case block.type -%}
+              {%- when '@app' -%}
+                <div class="app-block">
+                  {% render block %}
+                </div>
+
+              {%- when 'featured_image'-%}
+                {% if article.image %}
+                  <style>
+                    @media screen and (min-width: 768px) {
+                      #shopify-section-{{ section.id }} .image-container {
+                        width: {{ block.settings.image_width }}% !important;
+                        height: {{ block.settings.image_width }}% !important;
+                      }
+                    }
+                  </style>
+                  {% render 'image', image: article.image %}
+                  {% render 'separator' %}
+                {% endif %}
+
+              {%- when 'title'-%}
+                <header class="text-center">
+                  <h1 class="title no-margin">{{ article.title | link_to: article.url }}</h1>
+                </header>
+                {% if block.settings.show_publish_date or block.settings.show_author or block.settings.show_comment_count %}
+                  {% render 'separator', class: 'margin-top-25 no-margin-bottom' %}
+                  {% render 'article-meta', article: article, show_publish_date: block.settings.show_publish_date, show_author: block.settings.show_author, show_comment_count: block.settings.show_comment_count %}
+                {% endif %}
+
+              {%- when 'separator'-%}
+                {% assign separator_class = 'margin-top margin-bottom' %}
+                {% if block.settings.show_line %}
+                  {% assign separator_class = separator_class | append: ' lined' %}
+                {% endif %}
+                {% render 'separator', class: separator_class %}
+
+              {%- when 'content'-%}
+                <div class="body">
+                  {{ article.content }}
+                </div>
+                {% assign show_tags = block.settings.show_tags %}
+                {% if article.tags.size < 1 %}
+                  {% assign show_tags = false %}
+                {% endif %}
+
+                {% if show_tags %}
+                  <div class="tags text-center">
+                    {% for tag in article.tags %}
+                      {{ tag | replace: ' ', '&nbsp;' | link_to_tag: tag }}
+                    {% endfor %}
+                  </div>
+                {% endif %}
+
+              {%- when 'social_sharing'-%}
+              {% render 'separator' %}
+              {% render 'social-media-buttons', class: 'text-center' %}
+
+            {%- endcase -%}
+          {%- endfor -%}
+
+          {% if blog.comments_enabled? %}
+            {% if article.comments.size > 0 %}
+
+              {% render 'separator', class: 'lined full margin-top-200 margin-bottom-200' %}
+
+              <section id="comments" class="comments">
+
+                <h3 class="section-title">{{ 'blog.comments.count' | t: count: article.comments_count }}</h3>
+
+                {% paginate article.comments by article_comments_per_page %}
+
+                  {% for comment in article.comments %}
+                    <div class="comment">
+
+                      <div class="author-avatar">
+                        <img src="//gravatar.com/avatar/{{ comment.email | remove: ' ' | strip_newlines | downcase | md5 }}?s=100&amp;d=mm" alt="{{ comment.author }}"/>
+                      </div>
+
+                      <div class="comment-meta lht">
+                        <span class="author-name">{{ comment.author | strip_html }}</span>
+                        <span class="published text-light">{{ comment.created_at | time_tag: date_time_format }}</span>
+                      </div>
+
+                      <div class="comment-body">
+                        {{ comment.content | strip_html }}
+                      </div>
+
+                    </div>
+
+                    {% unless forloop.last %}
+                      {% render 'separator', class: 'lined margin-top margin-bottom' %}
+                    {% endunless %}
+
+                  {% endfor %}
+
+                  {% render 'pagination', paginate: paginate, separator_class: 'lined margin-top-150 margin-bottom' %}
+
+                {% endpaginate %}
+
+              </section>
+
+            {% endif %}
+
+            {% render 'separator', class: 'lined full margin-top-200 margin-bottom-200' %}
+
+            <section id="comment-form" class="comment-form">
+
+              {% if comment_form_title != "" %}
+                <h3 class="section-title">{{ 'blog.comments.form_title' | t }}</h3>
+              {% endif %}
+
+              {%- assign formId = 'CommmentForm' -%}
+              {% form 'new_comment', article, id: formId %}
+
+                {% if form.posted_successfully? and blog.moderated? %}
+                  <div class="panel green" data-form-status role="alert">{{ 'blog.comments.submitted_moderated' | t }}</div>
+                {% elsif form.posted_successfully? %}
+                  <div class="panel green" data-form-status role="alert">{{ 'blog.comments.submitted' | t }}</div>
+                {% else %}
+                  {% render 'form-errors', form: form, focus_on_error: true %}
+                {% endif %}
+
+                <div class="row">
+
+                  <div class="columns small-12 medium-6 input-group">
+                    <label for="comment_author">{{ 'blog.comments.name_field_label' | t }}</label>
+                    <input type="text" id="comment_author" name="comment[author]" value="{{ form.author }}" placeholder="{{ 'blog.comments.name_field_placeholder' | t }}"
+                    {% if form.errors contains 'author' %} class="error" aria-invalid="true" aria-describedby="{{ formId }}-author-error"{% endif %}>
+                    {% render 'field-error-message', form: form, field: 'author' %}
+                  </div>
+
+                  <div class="columns small-12 medium-6 input-group">
+                    <label for="comment_email">{{ 'blog.comments.email_field_label' | t }}</label>
+                    <input type="email" id="comment_email" name="comment[email]" value="{{ form.email }}" placeholder="{{ 'blog.comments.email_field_placeholder' | t }}"
+                    {% if form.errors contains 'email' %} class="error" aria-invalid="true" aria-describedby="{{ formId }}-email-error"{% endif %}>
+                    {% render 'field-error-message', form: form, field: 'email' %}
+                  </div>
+
+                </div>
+
+                <div class="row">
+
+                  <div class="columns small-12 input-group">
+                    <label for="comment_body">{{ 'blog.comments.comment_field_label' | t }}</label>
+                    <textarea id="comment_body" name="comment[body]" rows="2" placeholder="{{ 'blog.comments.comment_field_placeholder' | t }}" aria-label="{{ 'blog.comments.comment_field_placeholder' | t }}"
+                    {% if form.errors contains 'body' %} class="error" aria-invalid="true" aria-describedby="{{ formId }}-body-error"{% endif %}>{{ form.body }}</textarea>
+                    {% render 'field-error-message', form: form, field: 'body' %}
+                  </div>
+
+                </div>
+
+                <div class="form-actions">
+                  <button type="submit" class="button">{{ 'blog.comments.submit' | t }}</button>
+                </div>
+
+              {% endform %}
+
+              {% if blog.moderated? %}
+                {% render 'separator', class: 'margin-top no-margin-bottom' %}
+                <div class="notice text-light lht">
+                  {{ 'blog.comments.moderated' | t }}
+                </div>
+              {% endif %}
+
+            </section>
+          {% endif %}
+
+        </div>
+      </div>
+
+      {% render 'json-ld-article', article: article %}
+
+    </article>
+
+    {% if section.settings.show_article_nav %}
+      {% render 'pagination', paginate: paginate, show_pagination: true, next_obj: blog.next_article, prev_obj: blog.previous_article, next_url: blog.next_article, prev_url: blog.previous_article %}
+    {% endif %}
+
+  {% render 'section-close' %}
+{% render 'content-close', sidebar: false %}
+
+{% schema %}
+{
+  "name": "t:sections.main-article.name",
+  "settings": [
+    {
+      "type": "checkbox",
+      "id": "show_article_nav",
+      "label": "t:sections.main-article.settings.show_article_nav.label"
+    }
+  ],
+  "blocks": [
+    {
+      "type": "@app"
+    },
+    {
+      "type": "featured_image",
+      "name": "t:sections.main-article.blocks.featured_image.name",
+      "limit": 1,
+      "settings": [
+        {
+          "type": "select",
+          "id": "image_width",
+          "label": "t:sections.main-article.blocks.featured_image.settings.image_width.label",
+          "options": [
+            {
+              "value": "20",
+              "label": "t:sections.main-article.blocks.featured_image.settings.image_width.option__1.label"
+            },
+            {
+              "value": "30",
+              "label": "t:sections.main-article.blocks.featured_image.settings.image_width.option__2.label"
+            },
+            {
+              "value": "50",
+              "label": "t:sections.main-article.blocks.featured_image.settings.image_width.option__3.label"
+            },
+            {
+              "value": "80",
+              "label": "t:sections.main-article.blocks.featured_image.settings.image_width.option__4.label"
+            },
+            {
+              "value": "100",
+              "label": "t:sections.main-article.blocks.featured_image.settings.image_width.option__5.label"
+            }
+          ],
+          "default": "50"
+        }
+      ]
+    },
+    {
+      "type": "title",
+      "name": "t:sections.main-article.blocks.title.name",
+      "limit": 1,
+      "settings": [
+        {
+          "type": "checkbox",
+          "id": "show_author",
+          "label": "t:sections.main-article.blocks.title.settings.show_author.label"
+        },
+        {
+          "type": "checkbox",
+          "id": "show_publish_date",
+          "label": "t:sections.main-article.blocks.title.settings.show_publish_date.label"
+        },
+        {
+          "type": "checkbox",
+          "id": "show_comment_count",
+          "label": "t:sections.main-article.blocks.title.settings.show_comment_count.label"
+        }
+      ]
+    },
+    {
+      "type": "separator",
+      "name": "t:sections.main-article.blocks.separator.name",
+      "limit": 2,
+      "settings": [
+        {
+          "type": "checkbox",
+          "id": "show_line",
+          "label": "t:sections.main-article.blocks.separator.settings.show_line.label",
+          "default": true
+        }
+      ]
+    },
+    {
+      "type": "content",
+      "name": "t:sections.main-article.blocks.content.name",
+      "limit": 1,
+      "settings": [
+        {
+          "type": "checkbox",
+          "id": "show_tags",
+          "label": "t:sections.main-article.blocks.content.settings.show_tags.label"
+        }
+      ]
+    },
+    {
+      "type": "social_sharing",
+      "name": "t:sections.main-article.blocks.social_sharing.name",
+      "limit": 1
+    }
+  ]
+}
+{% endschema %}

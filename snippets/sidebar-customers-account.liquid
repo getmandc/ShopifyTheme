@@ -1,0 +1,12 @@
+<section class="secondary-block secondary-block-customer-adddresses">
+
+  <header>
+    <h1>{{ 'shopify.page_titles.addresses' | t }}</h1>
+  </header>
+
+  <div class="font-size-15">
+    {{ customer.default_address | format_address }}
+    <p><a href="{{ routes.account_addresses_url }}">{{ 'customer.account.view_addresses' | t }} ({{ customer.addresses_count }})</a></p>
+  </div>
+
+</section>
